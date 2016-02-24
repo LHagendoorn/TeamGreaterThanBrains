@@ -1,0 +1,2 @@
+1. https://en.wikipedia.org/wiki/Multiple-instance_learning#CITEREFAmores2013
+2. https://en.wikipedia.org/wiki/Multiple_instance_learning
