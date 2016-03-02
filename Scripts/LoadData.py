@@ -19,13 +19,23 @@ print(check_output(["dir", "input"], shell=True).decode("utf8"))
 
 # Any results you write to the current directory are saved as output.
 
+'''Loads the data from the files train.csv, train_photo_to_biz_ids.csv, 'test_photo_to_biz.csv'''
 def load(base_directory=None):
     import os
     basedir = base_directory or os.path.dirname(os.path.abspath(__file__))
+
+    #read files
     train_d = pd.read_csv(os.path.join(basedir, 'train.csv'))
     train_to_biz_id_data = pd.read_csv(os.path.join(basedir, 'train_photo_to_biz_ids.csv'))
+
+    #create file with businessIDs, pictureIDs and businessLabels
     X_TRAIN = pd.merge(train_d, train_to_biz_id_data, on='business_id')
-    Y_TRAIN = X_TRAIN['labels'].str.get_dummies(sep=' ')#this is much faster than apply
+
+    #create file with businessIDs, and businessLabels in binary form
+    Y_TRAIN = pd.concat([X_TRAIN['business_id'],X_TRAIN['labels'].str.get_dummies(sep=' ')], axis=1)
+    Y_TRAIN = Y_TRAIN.drop_duplicates()
+
+    #delete businessLabels from X_TRAIN FILE
     del(X_TRAIN['labels'])
 
     X_TEST = pd.read_csv(os.path.join(basedir, 'test_photo_to_biz.csv'))
@@ -39,7 +49,6 @@ def load(base_directory=None):
 
 data = load('input')
 
-# showing how this data is stored
 print data['X_TRAIN'].head()
 print data['Y_TRAIN'].head()
 print data['X_TEST'].head()
