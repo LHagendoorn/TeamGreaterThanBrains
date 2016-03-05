@@ -1,8 +1,22 @@
 # -*- coding: utf-8 -*-
 """
+Created on Sat Mar 05 15:23:25 2016
+
+@author: roosv_000
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Wed Mar 02 14:54:52 2016
 
 @author: roosv_000
+
+This script reduces the images in the test photos folder to 100 x 100 pixels, if 
+the orginal image is already smaller then 100 x 100 pixels it is put in a seperate folder.
+The names of the photo files stay the same exect an 'r' is added. 
+
+If you want to use this script do not forget to change the directories.  
+
 """
 
 import matplotlib.pyplot as plt
@@ -19,18 +33,27 @@ new_width=100
 new_height=100
 number_of_pixels = 100
 
+#set directories
+dir_test_photos='../../downloads/input/test_photos' # where the orignial test photo's are
+dir_test_photos_reduced='../../downloads/input/test_photos_reduced/' #where you want to put the reduced images.
+dir_test_photos_reduced_too_small='../../downloads/input/test_photos_reduced_too_small/' #where you want to put the images that were too small to reduce.
 
-#import train photos id to biz id csv file
-train_photos = pd.read_csv('../../downloads/input/train_photo_to_biz_ids.csv',sep=';')
-number_of_images=train_photos.index.size-1
-number_of_images=1000
+
+# get a list of all files in the test_photos folder, then remove the ._ files. 
+all_files_list=os.listdir(dir_test_photos) 
+test_photos_list=[ x for x in all_files_list if "_" not in x ]
+test_photos_list=[s.replace('.jpg', '') for s in test_photos_list]
+
+#get the number of images in the list 
+number_of_images=len(test_photos_list)
+number_of_images=100 # for testing
 
 # for every image do the following:
-for x in range(0, number_of_images):
+for x in range(0, number_of_images-1):
     
     #import the image
     scriptDir = os.path.dirname(__file__)
-    img = Image.open(os.path.join('../../downloads/input/','train_photos',''.join([str(train_photos.photo_id[x]),'.jpg'])))
+    img = Image.open(os.path.join(dir_test_photos,''.join([str(test_photos_list[x]),'.jpg'])))
     
       
     # Get dimensions of the orignial image
@@ -67,12 +90,12 @@ for x in range(0, number_of_images):
        # plt.imshow(rcimg)
                 
        #save the resulting image
-        imagename1=''.join([str(train_photos.photo_id[x]),'r.jpg'])
-        imagename2=''.join([str('../../downloads/input/train_photos_reduced/'),imagename1])
+        imagename1=''.join([str(test_photos_list[x]),'r.jpg'])
+        imagename2=''.join([str(dir_test_photos_reduced),imagename1])
         rcimg.save(imagename2)
                 
     else:
-       imagename1toosmall=''.join([str(train_photos.photo_id[x]),'r.jpg'])
-       imagename2toosmall=''.join([str('../../downloads/input/train_photos_reduced_too_small/'),imagename1toosmall])
+       imagename1toosmall=''.join([str(test_photos.photo_id[x]),'r.jpg'])
+       imagename2toosmall=''.join([str(dir_test_photos_reduced_too_small),imagename1toosmall])
        img.save(imagename2toosmall)
              
