@@ -6,31 +6,35 @@ Gives a classification for the test data.
 
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
-from sklearn import datasets
-from LoadData import load
+from LoadData import load, load_features
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import numpy
 
-# Create train and test data
+# Load train data
+data = load('input')
+Ytrain = data['Y_TRAIN'] #index, business_id, 0, 1, 2, 3, 4, 5, 6, 7, 8
 
-X, y = datasets.make_classification(n_samples=1000, n_features=10,
-                                    n_informative=4, n_redundant=2,
-                                    n_classes=4, n_clusters_per_class=1)
+featureData = load_features('input')
+Xtrain = featureData['TRAIN_F'] #index, business_id, r_mean, r_sd, g_mean, g_sd, b_mean, b_sd, imagecount
 
-#data = load('input')
+#merge features with labels. Reasons: order should be the same. Labels could contain businesses that are removed during preprocessing.
+trainData = pd.merge(Xtrain, Ytrain, on='business_id')
 
-train_samples = 500  # Samples used for training the models
-
-Xtrain = X[:train_samples]
-Xtest = X[train_samples:]
-Ytrain = y[:train_samples]
-Ytest = y[train_samples:]
+#split Xtrain and Y train again, hardcoded
+cols = trainData.columns.tolist()
+Xcols = ['r_mean', 'r_sd', 'g_mean', 'g_sd', 'b_mean', 'b_sd', 'imagecount']
+Ycols = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
+Xtrain = trainData[Xcols].values
+Ytrain = trainData[Ycols].values
 
 # Create random forest
 
 forest = RandomForestClassifier()
+print 'start fitting'
 forest.fit(Xtrain, Ytrain)
 
-# Apply forest to test data
-score = forest.score(Xtest, Ytest)
+#accuracy on train set
+print 'start scoring'
+score = forest.score(Xtrain,Ytrain)
 
 print "Accuracy score is %f" % score
