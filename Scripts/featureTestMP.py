@@ -26,13 +26,18 @@ def getFeatures(busId):
     rsum = 0;
     gsum = 0;
     bsum = 0;        
-    rsumSq = 0;
-    gsumSq = 0;
-    bsumSq = 0;         
+    rsumSq = numpy.int64(0);
+    gsumSq = numpy.int64(0);
+    bsumSq = numpy.int64(0);         
     missCount = 0;
+    imageWidthSum = 0;    
+    imageHeightSum = 0;
+    imageWidthSumSq = 0;
+    imageHeightSumSq = 0;    
     
     for photoId in photoIds:
         path = os.path.join('C:/Users/Laurens/Documents/uni/MLP/data/','train_photos_reduced',''.join([str(photoId),'r.jpg']))
+        pathNonReduced = os.path.join('C:/Users/Laurens/Documents/uni/MLP/data/','train_photos',''.join([str(photoId),'.jpg']))        
         if os.path.isfile(path):
             img = Image.open(path)
         else:
@@ -48,9 +53,16 @@ def getFeatures(busId):
         rsumSq = rsumSq + numpy.sum(numpy.square(rband))
         gsumSq = gsumSq + numpy.sum(numpy.square(gband))
         bsumSq = bsumSq + numpy.sum(numpy.square(bband))
-    
+        #access the non-reduced image
+        img = Image.open(pathNonReduced)
+        imageWidthSum = imageWidthSum + img.size[0]
+        imageHeightSum = imageHeightSum + img.size[1]
+        imageWidthSumSq = imageWidthSumSq + numpy.square(img.size[0])
+        imageHeightSumSq = imageHeightSumSq + numpy.square(img.size[1])
+        
     pcount = (len(photoIds)-missCount) * 10000
-    return (busId, pd.Series({'r_mean': rsum/pcount,'r_sd':calcSD(rsum, rsumSq, pcount),'g_mean': gsum/pcount,'g_sd':calcSD(gsum, gsumSq, pcount),'b_mean': bsum/pcount,'b_sd':calcSD(bsum, bsumSq, pcount),'imagecount':len(photoIds)}))
+    imgCount = len(photoIds)
+    return (busId, pd.Series({'r_mean': rsum/pcount,'r_sd':calcSD(rsum, rsumSq, pcount),'g_mean': gsum/pcount,'g_sd':calcSD(gsum, gsumSq, pcount),'b_mean': bsum/pcount,'b_sd':calcSD(bsum, bsumSq, pcount),'imagecount':imgCount, 'h_mean': imageHeightSum/imgCount, 'h_sd': calcSD(imageHeightSum, imageHeightSumSq, imgCount), 'w_mean': imageWidthSum/imgCount, 'w_sd': calcSD(imageWidthSum, imageWidthSumSq, imgCount)}))
 
 if __name__ == '__main__':
     train_photos = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/train_photo_to_biz_ids.csv',sep=',')
@@ -58,8 +70,8 @@ if __name__ == '__main__':
     
     #busIds = busIds[0:9]    
     
-    df = pd.DataFrame(index = busIds, columns = ['r_mean','r_sd','g_mean','g_sd','b_mean','b_sd','imagecount']);
-    p = mp.Pool(6, maxtasksperchild = 10)
+    df = pd.DataFrame(index = busIds, columns = ['r_mean','r_sd','g_mean','g_sd','b_mean','b_sd','imagecount','h_mean','h_sd','w_mean','w_sd'])
+    p = mp.Pool(3, maxtasksperchild = 10)
     count = 0;
     t0 = time.time()
     for x in p.imap(getFeatures, busIds):
