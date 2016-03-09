@@ -17,18 +17,10 @@ def create(Ypred, XtestDF):
         predList.append(ding)
 
     #create dataframe object containing business_ids and list of strings
-
+    labelsDF = pd.DataFrame(predList, columns=['labels'])
+    submission = pd.concat([XtestDF['business_id'], labelsDF], axis=1)
 
     #save in csv file
+    submission.to_csv('./submission2016-03-09colorFeatures.csv',index=False)
 
-    '''
-    new_submission = pd.read_csv('../input/sample_submission.csv')
-    for i in range(len(new_submission)):
-        new_submission.at[i,'labels'] = str(np.random.choice(9,4,replace=False)).strip('[]')
-
-    print (new_submission[0:5])
-
-    # Write to submission file
-    new_submission.to_csv('./random_guess.csv',index=False)
-    '''
     return True
