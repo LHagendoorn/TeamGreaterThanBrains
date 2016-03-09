@@ -68,12 +68,12 @@ def load_features(base_directory=None):
 
     #read files
     TRAIN_F = pd.read_csv(os.path.join(basedir, 'train_features.csv'))
-    #TEST_F = pd.read_csv(os.path.join(basedir, 'test_features.csv'))
+    TEST_F = pd.read_csv(os.path.join(basedir, 'test_features.csv'))
 
 
     featureData = {
         'TRAIN_F' : TRAIN_F,
-        #'TEST_F' : TEST_F,
+        'TEST_F' : TEST_F,
     }
     return featureData
 
