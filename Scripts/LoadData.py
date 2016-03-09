@@ -28,14 +28,14 @@ def load(base_directory=None):
     train_d = pd.read_csv(os.path.join(basedir, 'train.csv'))
     train_to_biz_id_data = pd.read_csv(os.path.join(basedir, 'train_photo_to_biz_ids.csv'))
 
-    #create file with businessIDs, pictureIDs and businessLabels
+    #create file with businessIDs, pictureIDs and labels
     X_TRAIN = pd.merge(train_d, train_to_biz_id_data, on='business_id')
 
-    #create file with businessIDs, and businessLabels in binary form
+    #create file with businessIDs, and labels in binary form
     Y_TRAIN = pd.concat([X_TRAIN['business_id'],X_TRAIN['labels'].str.get_dummies(sep=' ')], axis=1)
     Y_TRAIN = Y_TRAIN.drop_duplicates()
 
-    #delete businessLabels from X_TRAIN FILE
+    #delete labels from X_TRAIN FILE
     del(X_TRAIN['labels'])
 
     #swap columns for X_Test
