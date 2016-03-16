@@ -16,7 +16,7 @@ def calcSD(xsum, xsumSq, pcount):
     return math.sqrt(abs((xsumSq/pcount)-math.pow((xsum/pcount),2)))
 
 def getFeatures(busId):
-    train_photos = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/train_photo_to_biz_ids.csv',sep=',')
+    train_photos = pd.read_csv('C:/Users/roosv_000/Downloads/input/train_photo_to_biz_ids.csv',sep=';')
     photoIds = train_photos.loc[train_photos['business_id'] == busId].photo_id.ravel()
     #intialise numpy arrays
     #r = [];
@@ -36,8 +36,8 @@ def getFeatures(busId):
     imageHeightSumSq = 0;    
     
     for photoId in photoIds:
-        path = os.path.join('C:/Users/Laurens/Documents/uni/MLP/data/','train_photos_reduced',''.join([str(photoId),'r.jpg']))
-        pathNonReduced = os.path.join('C:/Users/Laurens/Documents/uni/MLP/data/','train_photos',''.join([str(photoId),'.jpg']))        
+        path = os.path.join('C:/Users/roosv_000/Downloads/input/','train_photos_reduced',''.join([str(photoId),'r.jpg']))
+        pathNonReduced = os.path.join('C:/Users/roosv_000/Downloads/input/','train_photos',''.join([str(photoId),'.jpg']))        
         if os.path.isfile(path):
             img = Image.open(path)
         else:
@@ -65,13 +65,13 @@ def getFeatures(busId):
     return (busId, pd.Series({'r_mean': rsum/pcount,'r_sd':calcSD(rsum, rsumSq, pcount),'g_mean': gsum/pcount,'g_sd':calcSD(gsum, gsumSq, pcount),'b_mean': bsum/pcount,'b_sd':calcSD(bsum, bsumSq, pcount),'imagecount':imgCount, 'h_mean': imageHeightSum/imgCount, 'h_sd': calcSD(imageHeightSum, imageHeightSumSq, imgCount), 'w_mean': imageWidthSum/imgCount, 'w_sd': calcSD(imageWidthSum, imageWidthSumSq, imgCount)}))
 
 if __name__ == '__main__':
-    train_photos = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/train_photo_to_biz_ids.csv',sep=',')
+    train_photos = pd.read_csv('C:/Users/roosv_000/Downloads/input/train_photo_to_biz_ids.csv',sep=';')
     busIds = pd.unique(train_photos.business_id.ravel())
     
-    #busIds = busIds[0:9]    
+    busIds = busIds[0:9]    
     
     df = pd.DataFrame(index = busIds, columns = ['r_mean','r_sd','g_mean','g_sd','b_mean','b_sd','imagecount','h_mean','h_sd','w_mean','w_sd'])
-    p = mp.Pool(3, maxtasksperchild = 10)
+    p = mp.Pool(2, maxtasksperchild = 5)
     count = 0;
     t0 = time.time()
     for x in p.imap(getFeatures, busIds):
@@ -83,6 +83,6 @@ if __name__ == '__main__':
     t1 = time.time()
     print('time: ' + str(t1-t0))
     
-    df.to_csv('features.csv')
+    df.to_csv('featurestest.csv')
 
 
