@@ -34,9 +34,9 @@ new_height=100
 number_of_pixels = 100
 
 #set directories
-dir_test_photos='C:/Users/roosv_000/Downloads/input/test_photos/' # where the orignial test photo's are
-dir_test_photos_reduced='C:/Users/roosv_000/Downloads/input/test_photos_reduced/' #where you want to put the reduced images.
-dir_test_photos_reduced_too_small='C:/Users/roosv_000/Downloads/input/test_photos_reduced_too_small/' #where you want to put the images that were too small to reduce.
+dir_test_photos='C:/Users/Laurens/Documents/uni/MLP/data/test_photos' # where the orignial test photo's are
+dir_test_photos_reduced='C:/Users/Laurens/Documents/uni/MLP/data/test_photos_reduced/' #where you want to put the reduced images.
+dir_test_photos_reduced_too_small='C:/Users/Laurens/Documents/uni/MLP/data/test_photos_reduced_too_small/' #where you want to put the images that were too small to reduce.
 
 
 # get a list of all files in the test_photos folder, then remove the ._ files. 
@@ -46,10 +46,11 @@ test_photos_list=[s.replace('.jpg', '') for s in test_photos_list]
 
 #get the number of images in the list 
 number_of_images=len(test_photos_list)
-#number_of_images=4 # for testing
+
+#number_of_images=100 # for testing
 
 # for every image do the following:
-for x in range(0, number_of_images):
+for x in range(0, number_of_images-1):
     
     #import the image
     scriptDir = os.path.dirname(__file__)
@@ -95,7 +96,7 @@ for x in range(0, number_of_images):
         rcimg.save(imagename2)
                 
     else:
-       imagename1toosmall=''.join([str(test_photos.photo_id[x]),'r.jpg'])
+       imagename1toosmall=''.join([str(test_photos_list[x]),'r.jpg'])
        imagename2toosmall=''.join([str(dir_test_photos_reduced_too_small),imagename1toosmall])
        img.save(imagename2toosmall)
              
