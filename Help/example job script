@@ -1,0 +1,20 @@
+#!/bin/bash
+#^ deze regel moet altijd bovenaan een bashscript -in comments laten
+
+#SBATCH -t 1:00:00
+#SBATCH -n 480
+#^ hierin geef je de tijd aan hoelang je de nodes wil reserveren en hoeveel nodes - in comments laten!
+
+#SBATCH -o my_job.o%j
+#^ print de output in een file incl errors
+
+module load python/2.7.9
+#^ load caffe
+
+cd $HOME/
+python test.py
+# ^ runt python script (in het script moet je wel de goede rferenties naar mappen hebben
+
+cp *.out $HOME/output
+rm *.out
+#^ moved de outputfile naar een aparte map, - niet veranderen.
