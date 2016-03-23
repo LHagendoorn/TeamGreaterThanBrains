@@ -12,12 +12,13 @@ import scipy.io as sio
 ###############################################################################
 # Load sample data
 caffeatures = sio.loadmat('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Features/caffe/caffe_features_werktdit.mat')['feats']
+caffeatures = caffeatures.transpose()
 
 ###############################################################################
 # Compute clustering with MeanShift
 
 # The following bandwidth can be automatically detected using
-bandwidth = estimate_bandwidth(caffeatures, quantile=0.2)
+bandwidth = estimate_bandwidth(caffeatures, quantile=0.2, n_samples=500)
 
 ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
 ms.fit(caffeatures)
@@ -41,7 +42,7 @@ colors = cycle('bgrcmykbgrcmykbgrcmykbgrcmyk')
 for k, col in zip(range(n_clusters_), colors):
     my_members = labels == k
     cluster_center = cluster_centers[k]
-    plt.plot(caffeatures[my_members, 0], caffeatures[my_members, 1], col + '.')
+    plt.plot(caffeatures[my_members, 20], caffeatures[my_members, 30], col + '.')
     plt.plot(cluster_center[0], cluster_center[1], 'o', markerfacecolor=col,
              markeredgecolor='k', markersize=14)
 plt.title('Estimated number of clusters: %d' % n_clusters_)

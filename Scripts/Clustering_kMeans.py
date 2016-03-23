@@ -11,12 +11,12 @@ import scipy.io as sio
 
 ###############################################################################
 # Load sample data
-caffeatures = sio.loadmat('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Features/caffe/caffe_features_werktdit.mat')['feats']
+caffeatures = sio.loadmat('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Features/caffe/caffe_features_werktdit.mat')['feats'].transpose()
 
 ###############################################################################
 # Compute clustering with KMeans
 
-km = KMeans(n_clusters=2)
+km = KMeans(n_clusters=9)
 km.fit(caffeatures)
 labels = km.labels_
 cluster_centers = km.cluster_centers_
@@ -36,7 +36,7 @@ colors = cycle('bgrcmykbgrcmykbgrcmykbgrcmyk')
 for k, col in zip(range(n_clusters_), colors):
     my_members = labels == k
     cluster_center = cluster_centers[k]
-    plt.plot(caffeatures[my_members, 0], caffeatures[my_members, 1], col + '.')
+    plt.plot(caffeatures[my_members, 10], caffeatures[my_members, 11], col + '.')
     plt.plot(cluster_center[0], cluster_center[1], 'o', markerfacecolor=col,
              markeredgecolor='k', markersize=14)
 plt.title('Estimated number of clusters: %d' % n_clusters_)
