@@ -1,0 +1,12 @@
+
+SLURM job ID		Runtijd		Data								Batchsize		Resultaat
+2042530				1 uur		train_reduced, 100x100				10 				2780 images
+2042745				<10 min		too small 137 images				10				137 images
+
+2043318				30 min		scratch, train_mediumsize 250x250	10				1360 images
+
+Het kan zijn dat de grootte van de images uitmaakt voor hoelang hij draait. Zo ja: dan is hij een tikkie sneller op de scratch data. Een factor 2.5 ongeveer. Zo niet, dan maakt het niet uit of hij op scratch data draait ja of nee.
+
+2043548				30 min		scratch, train_mediumsize 250x250	500				1000-1500 images (bij de 1000 gestopt)
+
+2043664				<6 uur		kopieertaak uitvoeren: images verdelen in 10 directories
