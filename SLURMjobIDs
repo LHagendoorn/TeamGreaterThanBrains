@@ -10,3 +10,24 @@ Het kan zijn dat de grootte van de images uitmaakt voor hoelang hij draait. Zo j
 2043548				30 min		scratch, train_mediumsize 250x250	500				1000-1500 images (bij de 1000 gestopt)
 
 2043664				<6 uur		kopieertaak uitvoeren: images verdelen in 10 directories
+
+
+De jobs [fout]
+2045282
+2045283
+2045284
+2045285
+
+Dé jobs
+12 uur per stuk max. Train data.
+
+2045295			featureExtract0
+2045297			featureExtract1
+2045298			featureExtract2
+2045299			featureExtract3
+2045300			featureExtract4
+2045301			featureExtract5
+2045302			featureExtract6
+2045303			featureExtract7
+2045304			featureExtract8
+2045306			featureExtract9
