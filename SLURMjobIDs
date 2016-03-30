@@ -31,3 +31,26 @@ Dé jobs
 2045303			featureExtract7
 2045304			featureExtract8
 2045306			featureExtract9
+
+Verwachte aantal uren: 8.4 x 16 x 10 = 1344
+8.4 verwachte aantal uren dat de jobs runnen, Gebaseerd op eerste meting, hoe snel hij toen de images verwerkte. 
+16 cores per node
+10 jobs
+Maximum aantal uren is dus: 12x16x10 = 1920 uur
+Donderdag: 1258 uur gebruikt.
+
+Vrijdag: 1259.5 uur gebruikt. Ik gok dat de uren nog niet bijgewerkt zijn...
+
+De jobs
+12 uur per stuk max. Test data.
+
+2045692			0
+	693			1
+	694			2
+	695			3
+	696			4
+	697			5
+	698			6
+	699			7
+	700			8
+	701			9
