@@ -85,3 +85,29 @@ Run the following code to see what the featureData dictionary looks like
 
 #print featureData['TRAIN_F'].head()
 #print data['TEST_F'].head()
+
+'''Loads the data from the files caffe_features_XXX.csv and photo_order_XXX.csv, with XXX==train or XXX==test'''
+def load_caffe_features(base_directory=None, trainSet=True):
+    import os
+    basedir = base_directory or os.path.dirname(os.path.abspath(__file__))
+
+    if trainSet:
+        print('loading train caffe features')
+        featureFileName = 'caffe_features_train.csv'
+        orderFileName = 'photo_order_train.csv'
+    else:
+        print('loading test caffe features')
+        featureFileName = 'caffe_features_test.csv'
+        orderFileName = 'photo_order_test.csv'
+
+    #read files
+    features = pd.read_csv(os.path.join(basedir, featureFileName),header=None, iterator=True,chunksize=1000)
+    FEATURES = pd.concat(features, ignore_index=True)
+    ORDER = pd.read_csv(os.path.join(basedir, orderFileName),header=None)
+
+
+    featureData = {
+        'FEATURES':FEATURES,
+        'ORDER':ORDER,
+    }
+    return featureData
