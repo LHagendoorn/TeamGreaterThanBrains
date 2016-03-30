@@ -7,18 +7,21 @@ Created on Tue Mar 22 23:05:48 2016
 
 import numpy as np
 from sklearn.cluster import MeanShift, estimate_bandwidth
-import scipy.io as sio
+import pandas as pd
+
 
 ###############################################################################
 # Load sample data
-caffeatures = sio.loadmat('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Features/caffe/caffe_features_werktdit.mat')['feats']
-caffeatures = caffeatures.transpose()
+#caffeatures = sio.loadmat('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Features/caffe/caffe_features_werktdit.mat')['feats']
+#caffeatures = caffeatures.transpose()
+testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, nrows = 1)
+caffeatures = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in list(testRead)})
 
 ###############################################################################
 # Compute clustering with MeanShift
 
 # The following bandwidth can be automatically detected using
-bandwidth = estimate_bandwidth(caffeatures, quantile=0.2, n_samples=500)
+bandwidth = estimate_bandwidth(testRead, quantile=0.2, n_samples=500)
 
 ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
 ms.fit(caffeatures)
