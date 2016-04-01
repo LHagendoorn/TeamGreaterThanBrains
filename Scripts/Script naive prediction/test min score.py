@@ -17,7 +17,9 @@ submit = pd.read_csv('sample_submission.csv')
 photo_count = biz_id_train.groupby('business_id')
 photo_count2 = photo_count.count()
 photo_count3 = photo_count2.sort_values('photo_id')
-photo_count3.hist(bins=100)
+numberofphotos=photo_count3.hist(bins=3000)
+mat=biz_id_train.as_matrix
+uniek=np.unique(mat)
 
 # convert numeric labels to binary matrix
 def to_bool(s):
