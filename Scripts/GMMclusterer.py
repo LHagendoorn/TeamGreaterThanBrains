@@ -51,8 +51,8 @@ from sklearn.externals import joblib
 #        ell.set_alpha(0.5)
 #        ax.add_artist(ell)
 
-testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, nrows = 1)
-caffeatures = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in list(testRead)})
+testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, nrows = 1)
+caffeatures = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in list(testRead)})
 
 ## Break up the dataset into non-overlapping training (75%) and testing
 ## (25%) sets.
@@ -67,10 +67,10 @@ caffeatures = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_feature
 #y_test = iris.target[test_index]
 
 #n_classes = len(np.unique(y_train))
-n_classes = 100
+n_classes = 2048
 
 # Try GMMs using different types of covariances.
-classifier = GMM(n_components=n_classes, covariance_type='diag', init_params='wc', n_iter=20)
+classifier = GMM(n_components=n_classes, covariance_type='full')
 
 #n_classifiers = len(classifiers)
 
@@ -83,12 +83,12 @@ classifier = GMM(n_components=n_classes, covariance_type='diag', init_params='wc
 ## Since we have class labels for the training data, we can
 ## initialize the GMM parameters in a supervised manner.
 
-classifier.means_ = np.load('../clusters/100centresKmeans.npy')
+#classifier.means_ = np.load('../clusters/100centresKmeans.npy')
 
 # Train the other parameters using the EM algorithm.
 classifier.fit(caffeatures)
 
-joblib.dump(classifier, '100clGMMEM.pkl')
+joblib.dump(classifier, '2048clGMMEM.pkl')
 
 #h = plt.subplot(2, n_classifiers / 2, index + 1)
 #make_ellipses(classifier, h)

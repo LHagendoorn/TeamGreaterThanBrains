@@ -1,0 +1,80 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Apr 01 18:18:32 2016
+
+@author: Laurens
+"""
+
+import numpy as np
+import pandas as pd
+
+from dataanal.figureOutValidationSet import getSplit
+from sklearn.mixture import GMM
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.svm import SVC
+from sklearn.externals import joblib
+
+bizWithoutLabel = [1627, 2661, 2941, 430] #shockingly enough, hardcoding is the most effiient way I can come up with at the moment to not have to load an entirely new csv file
+
+#REMOVE ROW LIMIT WHEN NOT TESTING
+#testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, nrows = 1)
+trainData = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})
+data = pd.concat([trainData, pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)}, nrows=100)])
+
+#------------                     TODO take command line arguments to make this dependend on the instatiation
+#dependend on the instantiation
+n_classes = 10
+cov_type = 'diag'
+
+clusterer = GMM(n_components=n_classes, covariance_type=cov_type,n_iter=0)
+clusterer.fit(data)
+bicScore = clusterer.bic(data)
+
+clusterer.set_params(n_iter=1,init_params='')
+prevBicScore = bicScore+2
+while abs(prevBicScore - bicScore) >1:
+    clusterer.fit(data)
+    prevBicScore = bicScore
+    bicScore = clusterer.bic(data)
+    print('bicScore:')    
+    print(bicScore)
+    print('diff')
+    print(prevBicScore-bicScore)
+
+#save the clusters in case it's the best:
+joblib.dump(clusterer, str(n_classes) + cov_type + 'GMMEM.pkl')
+
+
+#get the businessId's for the train and verification set (not including the empty labels)
+trainBizIds, verifBizIds = getSplit()
+
+#=============== Prepare the clusteredTrainSet: ==================
+photoToBiz = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/train_photo_to_biz_ids.csv', sep=',')    
+photoToBiz = photoToBiz[~photoToBiz.business_id.isin(bizWithoutLabel)] #remove biz without a label
+clusteredTrainSet = pd.DataFrame(index = trainBizIds, columns = range(n_classes))
+photoToIndex = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/photo_order_train.csv', sep=',', header=None).reset_index(level=0)
+
+#COMMENT OUT THE COUNTS WHEN NOT TESTING
+count = trainBizIds.size;
+for busId in trainBizIds:
+    photoIds = photoToBiz.loc[photoToBiz['business_id'] == busId].photo_id.to_frame()
+    photoIds = photoIds.photo_id.map(lambda x: str(x)+ 'm.jpg')
+    photoIds = photoIds.to_frame()
+    featureIds = pd.merge(photoToIndex, photoIds, left_on=0, right_on='photo_id')['index'] #Select only the indices of the images of this business
+    probs = clusterer.predict_proba(data.iloc[featureIds.values])
+    probs = probs.sum(axis=0, dtype=np.float64)
+    probs /= probs.max()
+    clusteredTrainSet.loc[busId] = probs
+    count-=1
+    print(count)
+
+#=================== Prepare the labelsTrainSet =========================
+binLabels = pd.read_csv('C:/Users/Laurens/Documents/Uni/MLP/Data/labels_train_y.csv', header=None)
+indexToBizId = pd.DataFrame({'bizId': photoToBiz.business_id.unique()}).reset_index(level=0)
+indexToBizId = indexToBizId[indexToBizId.bizId.isin(trainBizIds)]
+labelsTrainSet = binLabels.iloc[indexToBizId['index']]
+
+S = OneVsRestClassifier(SVC(kernel='poly')).fit(clusteredTrainSet.values, labelsTrainSet)
+
+#------------------            TODO: Classify the validation set, save results
+
