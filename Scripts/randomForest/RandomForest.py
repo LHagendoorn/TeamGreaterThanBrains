@@ -6,6 +6,7 @@ Gives a classification for the test data.
 from sklearn import cross_validation
 from sklearn.ensemble import RandomForestClassifier
 from CreateClassification import create
+from CreateClassification import createProbFile
 from LoadData import load, load_features
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import numpy as np
@@ -27,9 +28,13 @@ def validateForest(forest, Xtrain, Ytrain):
 
 '''Predicts the classes for the test data and saves it in a csv file. Returns true if csv file is created.'''
 def createClassification(forest,Xtest, XtestDF):
-    '''CREATE CLASSIFICATION'''
     Ypred = forest.predict(Xtest)
     return create(Ypred, XtestDF)
+
+'''Predicts the probabilities for the classes for the test data and saves it in a csv file. Returns true if csv file is created.'''
+def createProbabilities(forest,Xtest):
+    Yprob = forest.predict_proba(Xtest)
+    return createProbFile(Yprob)
 
 '''Loads the data and turns it into arrays of the correct shape. Returns the data in a dictionary.'''
 def getData():
