@@ -24,3 +24,22 @@ def create(Ypred, XtestDF):
     submission.to_csv('./submission2016-03-09colorFeatures.csv',index=False)
 
     return True
+
+
+'''Creates the probability file
+    - Yprob = list with dimensions [n_outputs]x[n_samples]x[n_classes]'''
+def createProbFile(Yprob):
+
+    #transform 3d list into 2d list of size n_samples x n_outputs
+    ff = np.array(Yprob)
+    ff = np.delete(ff,0,2) #delete index 0 of 3rd dimension
+    ff = np.squeeze(ff)    #remove singleton dimension
+    ff = np.transpose(ff)
+
+    #transform to dataframe
+    probabilities = pd.DataFrame(ff)
+
+    #save in csv file
+    probabilities.to_csv('./probColor.csv',index=False, header=None)
+
+    return True
