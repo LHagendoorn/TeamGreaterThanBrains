@@ -20,8 +20,8 @@ bizWithoutLabel = [1627, 2661, 2941, 430] #shockingly enough, hardcoding is the 
 
 #REMOVE ROW LIMIT WHEN NOT TESTING
 #testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, nrows = 1)
-trainData = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})
-data = pd.concat([trainData, pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})])
+trainData = pd.read_csv('$HOME/features/Features_data/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})
+data = pd.concat([trainData, pd.read_csv('$HOME/features/Features_data/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})])
 print('data loaded!')
 
 #dependend on the instantiation
@@ -56,11 +56,11 @@ print('Saved the fitted clusterer')
 trainBizIds, verifBizIds = getSplit()
 
 #=============== Prepare the clusteredTrainSet: ==================
-photoToBiz = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/train_photo_to_biz_ids.csv', sep=',')    
+photoToBiz = pd.read_csv('$HOME/train_photo_to_biz_ids.csv', sep=',')    
 photoToBiz = photoToBiz[~photoToBiz.business_id.isin(bizWithoutLabel)] #remove biz without a label
 clusteredTrainSet = pd.DataFrame(index = trainBizIds, columns = range(n_classes))
 clusteredVerifSet = pd.DataFrame(index = verifBizIds, columns = range(n_classes))
-photoToIndex = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/photo_order_train.csv', sep=',', header=None).reset_index(level=0)
+photoToIndex = pd.read_csv('$HOME/features/Features_data/photo_order_train.csv', sep=',', header=None).reset_index(level=0)
 
 #--------- Cluster the train set
 for busId in trainBizIds:
@@ -89,7 +89,7 @@ for busId in verifBizIds:
 print('Clustered test set!')
 
 #=================== Prepare the labelsTrainSet =========================
-binLabels = pd.read_csv('C:/Users/Laurens/Documents/Uni/MLP/Data/labels_train_y.csv', header=None)
+binLabels = pd.read_csv('$HOME/labels_train_y.csv', header=None)
 indexToBizId = pd.DataFrame({'bizId': photoToBiz.business_id.unique()}).reset_index(level=0)
 trainIndexToBizId = indexToBizId[indexToBizId.bizId.isin(trainBizIds)]
 labelsTrainSet = binLabels.iloc[trainIndexToBizId['index']]
