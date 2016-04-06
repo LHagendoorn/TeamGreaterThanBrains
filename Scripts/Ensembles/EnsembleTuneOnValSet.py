@@ -10,26 +10,28 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-#import the example submission file for its stucture
-submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/SubmissionFormat.csv',sep=',')
-
 #load models
 model1load=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/probSTAT.csv', sep=';', header=None)
 model2load= pd.read_csv('C:/Users/roosv_000/Downloads/probSVM.csv',sep=',', header=None)
 model3load= pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/probColor.csv',sep=',', header=None)
+
+#weights for the models, if you only want to ensemble 2 methods set the third and forth value on 0
+weights=[0.25, 0.65, 0.1, 0]
+
+#classification threshold
+threshold=0.5
+
+#load verificatie set and the full train data
+veriset=np.load('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/verifSet.npy')
+traindata=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/train.csv', sep=';')
+trainlabelsseries=traindata['labels'].astype(str).str.split(',')
+trainlabels=pd.Series.to_frame(trainlabelsseries)
 
 #get the probability matrix from the models
 model1=model1load.values
 model2=model2load.values
 model3=model3load.values
 model4=model1load.values
-
-#weights for the models, if you only want to ensemble 2 methods set the third and forth value on 0
-weights=[0.25, 0.65, 0.1, 0]
-
-
-#classification threshold
-threshold=0.5
 
 ensembleprob=model1*weights[0]+model2*weights[1]+model3*weights[2]+model4*weights[3]
 
@@ -44,10 +46,15 @@ for row in ensembleprob:
         sep = " "
         ding = sep.join(indices)
         predList.append(ding)
+        
+#calculate true and false positive and false negatives
 
-#create dataframe object containing business_ids and list of strings
 
-submit['labels' ] = predList
-
-#save in csv file
-submit.to_csv('Ensembletest.25.6.15.csv',index=False)
+#calculate F1 score
+tp=float(1)
+fn=float(1)
+fp=float(1)
+r=tp/(tp+fn)
+p=tp/(tp+fp)
+F1=2*((p*r)/(p+r))
+print(F1)
