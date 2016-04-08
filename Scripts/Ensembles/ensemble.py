@@ -16,15 +16,16 @@ submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts
 #load models
 model1load=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/probSTAT.csv', sep=';', header=None)
 model2load= pd.read_csv('C:/Users/roosv_000/Downloads/probSVM.csv',sep=',', header=None)
+model3load= pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/probColor.csv',sep=',', header=None)
 
 #get the probability matrix from the models
 model1=model1load.values
 model2=model2load.values
-model3=model1load.values
+model3=model3load.values
 model4=model1load.values
 
 #weights for the models, if you only want to ensemble 2 methods set the third and forth value on 0
-weights=[0.1, 0.9, 0, 0]
+weights=[0.25, 0.65, 0.1, 0]
 
 
 #classification threshold
@@ -49,4 +50,4 @@ for row in ensembleprob:
 submit['labels' ] = predList
 
 #save in csv file
-submit.to_csv('Ensemble.csv',index=False)
+submit.to_csv('Ensembletest.25.6.15.csv',index=False)
