@@ -5,11 +5,14 @@ from datetime import datetime
 
 class Aggregator:
 
-    def __init__(self, Xdata, features, photo_order, trainSet=True):
-        self.Xdata = Xdata
-        self.trainSet = trainSet #true if X data is trainset, if testset, then false
-        self.features = features
-        self.photo_order = photo_order
+    def __init__(self, data, set='Train'):
+        self.set = set #either 'Test', 'Train' or 'Validation'
+        self.data = data #dataFrame with columns 'business_id', 'photo_id', and then all caffe features
+
+        #split features from metadata
+        self.metadata = data[['business_id','photo_id']]
+        self.data.drop(['business_id','photo_id'], axis=1, inplace=True)
+
 
     '''
     Gives the aggregated features per business (the Median, Q1, Q3, Min and Max)
@@ -26,9 +29,8 @@ class Aggregator:
         #initialize
         counter = 0
         businessIndex = 0
-        allBusinessIDs = self.Xdata.business_id.unique()
+        allBusinessIDs = self.metadata.business_id.unique()
         nrOfBusinesses = len(allBusinessIDs)
-        nrOfFeatures = self.features.shape[1]
 
         #pre-allocate space for aggregated data
         aggregatedData = [0] * nrOfBusinesses
@@ -36,7 +38,7 @@ class Aggregator:
         #for each business
         for businessID in allBusinessIDs:
             #extract photoIDs of this business
-            ff = self.Xdata[(self.Xdata.business_id == businessID)]
+            ff = self.metadata[(self.metadata.business_id == businessID)]
             photosIDs = ff['photo_id']
             nrOfPhotos = len(photosIDs)
 
@@ -53,13 +55,13 @@ class Aggregator:
 
                 #find index of this photo in the features
                 photo_ref = str(photoID) + ''.join('m.jpg')
-                indx = self.photo_order.loc[self.photo_order[0] == photo_ref]
+                indx = self.metadata.photo_id.loc[self.metadata.photo_id[0] == photo_ref]
 
                 #check whether photo has a feature vector. If so:
                 if not(indx.empty):
                     #save the feature vector of this photo
                     ind = indx.index[0]
-                    feats = self.features.loc[ind,:]
+                    feats = self.data.loc[ind,:]
                     ff = feats.values.tolist()
                     businessData[photoIndex] = ff
                     photoIndex += 1
@@ -76,7 +78,7 @@ class Aggregator:
 
             #print progress
             counter = counter + 1
-            if counter%100 == 0:
+            if counter%10 == 0:
                 print('Progress aggregation. Business ' + str(counter))
                 print datetime.now()
 
@@ -110,13 +112,8 @@ class Aggregator:
 
         df = pd.DataFrame(data)
 
-        if self.trainSet:
-            filename = 'Train'
-        else:
-            filename = 'Test'
-
         #save in csv file
-        df.to_csv('./input/aggData' + filename + '.csv', index=False, header=None)
+        df.to_csv('./input/aggData' + self.set + '.csv', index=False, header=None)
 
 
 

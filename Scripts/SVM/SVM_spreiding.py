@@ -28,7 +28,7 @@ class SVM_spreiding:
         self.Ytrain = generalData['Y_TRAIN']
         self.Xtest = generalData['X_TEST']
 
-        print 'Loading general data is done'
+        print 'Loading general data is done. Continue with loading caffe features.'
         print datetime.now()
 
         #if aggregated data needs to be generated, also load caffe features data
@@ -36,10 +36,10 @@ class SVM_spreiding:
             #load train data
             trainFeatureData = LoadData.load_caffe_features('input', trainSet=True)
             self.trainFeatures = trainFeatureData['FEATURES']
-            self.trainOrder = trainFeatureData['ORDER']
+            trainOrder = trainFeatureData['ORDER']
 
-            #delete validation dictionary from memory
-            del trainFeatureData
+            print 'Loading caffe features is done. Continue with splitting train and validation set.'
+            print datetime.now()
 
             #############################################
             #   SPLIT TRAINSET INTO TRAIN AND VALIDATION PART
@@ -50,26 +50,24 @@ class SVM_spreiding:
             validSetIds = np.load('input/verifSet.npy')
 
             #merge trainOrder with trainFeatures
-            self.trainOrder.rename(columns={0:'photo_id'},inplace=True)
-            allData = pd.concat([self.trainOrder, self.trainFeatures], axis=1)
+            allData = pd.concat([trainOrder, self.trainFeatures], axis=1)
 
             #create dataframes of photo indices for train and validation set
             trainPhotoIds = self.Xtrain[self.Xtrain.business_id.isin(trainSetIds)]
             validPhotoIds = self.Xtrain[self.Xtrain.business_id.isin(validSetIds)]
 
+            #make photo_ids strings --> merging is possible
+            trainPhotoIds['photo_id'].apply(str)
+            validPhotoIds['photo_id'].apply(str)
+
             #merge allData dataframe with photo indice dataframes --> split allData in train and validation
-            self.validationFeatures = pd.merge([validPhotoIds, allData], on='photo_id')
-            self.trainFeatures = pd.merge([trainPhotoIds, allData], on='photo_id')
+            self.validationFeatures = pd.merge(validPhotoIds, allData, on='photo_id')
+            self.trainFeatures = pd.merge(trainPhotoIds, allData, on='photo_id')
 
-            #split order and feature files
-            self.validationOrder = self.validationFeatures['photo_id']
-            self.trainOrder = self.trainFeatures['photo_id']
-
-            #remove unnecessary columns
-            self.validationFeatures.drop('photo_id', axis=1)
-            self.validationFeatures.drop('business_id', axis=1)
-            self.trainFeatures.drop('photo_id', axis=1)
-            self.trainFeatures.drop('business_id', axis=1)
+            #delete validation dictionary from memory
+            del trainFeatureData
+            del trainOrder
+            del allData
 
             #############################################
             #   COMPUTE AGGREGATED DATA
@@ -80,7 +78,6 @@ class SVM_spreiding:
 
             #delete validation data from memory
             del self.validationFeatures
-            del self.validationOrder
 
             print 'VALIDATION SET DONE'
             print datetime.now()
@@ -101,6 +98,13 @@ class SVM_spreiding:
             self.testFeatures = testFeatureData['FEATURES']
             self.testOrder = testFeatureData['ORDER']
 
+            #merge testOrder with testFeatures
+            self.testOrder.rename(columns={0:'photo_id'},inplace=True)
+            allData = pd.concat([self.testOrder, self.testFeatures], axis=1)
+
+            #merge testFeatures with X_test on photo_ids --> business_ids are available
+            self.testFeatures = pd.merge(self.Xtest, allData, on='photo_id')
+
             #compute test aggregated data
             self.call_aggregator('test')
 
@@ -119,15 +123,15 @@ class SVM_spreiding:
     def call_aggregator(self, setString):
         if setString == 'train':
             print 'Initializing SVM: Computing aggregated train data...'
-            agg = Aggregator(self.Xtrain, self.trainFeatures, self.trainOrder)
+            agg = Aggregator(self.trainFeatures, set='Train')
             self.aggTrainData = agg.get_aggregated_data()
         elif setString == 'validation':
             print 'Initializing SVM: Computing aggregated validation data...'
-            agg = Aggregator(self.Xtrain, self.validationFeatures, self.validationOrder)
+            agg = Aggregator(self.validationFeatures,  set='Validation')
             self.aggValData = agg.get_aggregated_data()
         elif setString == 'test':
             print 'Initializing SVM: Computing aggregated test data...'
-            agg = Aggregator(self.Xtest, self.testFeatures, self.testOrder)
+            agg = Aggregator(self.testFeatures,  set='Test')
             self.aggTestData = agg.get_aggregated_data()
         else:
             print 'Error call_aggregator. This type of set is unknown.'
