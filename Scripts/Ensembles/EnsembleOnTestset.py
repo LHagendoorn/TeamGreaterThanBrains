@@ -4,31 +4,29 @@ Created on Wed Mar 30 15:15:59 2016
 
 @author: roosv_000
 
-Ensemble of 4 models is tested on a valadationset to determine the desired weight for each model. 
-Label probalilities for the valadation businesses predicted by four different models are imported.
-The F1 scores for the ensemble of models is calculated 
+Ensemble of 4 models. Label probalilities for the test businesses predicted by four different models are imported. 
+By setting weights for each model one submission file is made.
 """
-
 import numpy as np
 import pandas as pd
 
-#load models, every model consist of a matrix label probabilities for all businesses in the valadation set.
+#load models, every model consist of a matrix label probabilities for all businesses in the test set.
 model1 = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/probSTAT.csv', sep=';', header=None).values
 model2 = pd.read_csv('C:/Users/roosv_000/Downloads/probSVM.csv',sep=',', header=None).values
 model3 = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/probColor.csv',sep=',', header=None).values
 model4 = np.load('../Labels per photo/data_array_test_9-4.onallprob.npy')
 
+#import the example submission file for its stucture
+submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/SubmissionFormat.csv',sep=',')
+
 #weights for the models, if you only want to ensemble 2 methods set the third and forth value on 0
-weights = [0.25, 0.65, 0.1, 0]
+weights = [0, 0.7, 0, 0.3]
+
+# Set a filename for the submission file
+filename = 'Ensembletest_MeanSVM_perphotoSVM_7_3.csv'
 
 #classification threshold
 threshold = 0.5
-
-#load verificatie set and the full train data
-veriset = np.load('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/verifSet.npy')
-traindata = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/train.csv', sep=';')
-trainlabelsseries = traindata['labels'].astype(str).str.split(',')
-trainlabels = pd.Series.to_frame(trainlabelsseries)
 
 #Create one matrix with the probability for each label for every business, by combining the probabilities in the models with certain weights.
 ensembleprob = model1 * weights[0] + model2 * weights[1] + model3 * weights[2] + model4 * weights[3]
@@ -44,16 +42,9 @@ for row in ensembleprob:
         sep = " "
         labelstr = sep.join(indices)
         predList.append(labelstr)
-        
-        
-#calculate true and false positive and false negatives
 
+# Put labels(predList) in de submissionfile colomn named 'labels'
+submit['labels' ] = predList
 
-#calculate F1 score
-tp=float(1)
-fn=float(1)
-fp=float(1)
-r=tp/(tp+fn)
-p=tp/(tp+fp)
-F1=2*((p*r)/(p+r))
-print(F1)
+#save in csv file
+submit.to_csv(filename,index=False)

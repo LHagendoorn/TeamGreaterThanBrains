@@ -9,8 +9,9 @@ import pandas as pd
 #import collections
 
 
-PhotoBusid=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/train_photo_to_biz_ids.csv', sep=';')
-LabelsForPhotos=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/photolabeltest2.csv', sep=';')
+PhotoBusid=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/test_photo_to_biz.csv', sep=',')
+LabelsForPhotos=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/pred_TestSetPerImage.csv', sep=',')
+
 
 UniqueBus=np.unique(PhotoBusid['business_id'])
 NrUniqueBus=len(UniqueBus)
