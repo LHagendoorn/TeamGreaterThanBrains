@@ -15,8 +15,8 @@ submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts
 
 PhotoBusid=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/train_photo_to_biz_ids.csv', sep=';')
 
-testhist=np.load('../Labels per photo/data_array_val_hist_9-4_OnTrainset.npy')
-trainhist=np.load('../Labels per photo/data_array_train_hist_9-4_OnTrainset.npy')
+valhist=np.load('../Labels per photo/data_array_val_hist_9-4_OnTrainset.npy')
+trainhist=np.load('../Labels per photo/data_array_train_hist_10-4_OnTrainset.npy')
 
 trainlabels=pd.read_csv('../Ensembles/train.csv',sep=';')
 
@@ -26,9 +26,9 @@ trainlabels=pd.read_csv('../Ensembles/train.csv',sep=';')
 masklabels = trainlabels[['business_id']].isin(trainbus).all(axis=1)
 traintrain=trainlabels.ix[masklabels]
 trainlab=traintrain.sort_values(by='business_id')
-df = pd.DataFrame(trainhist)
-df=df.ix[masklabels]
-df=pd.DataFrame.as_matrix(df)
+#df = pd.DataFrame(trainhist)
+#df=df.ix[masklabels]
+#df=pd.DataFrame.as_matrix(df)
 
 #trainhist.drop(trainhist.index[masklabels])
 
@@ -43,10 +43,10 @@ print 'done intitializing data'
 print 'Training SVM....'   
 ti = time.time()
 
-S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(df, trainlabelsbool)
+S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(trainhist, trainlabelsbool)
 #S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(trainhist, trainlabelsbool)
 
-score = S.score(df,trainlabelsbool)
+score = S.score(trainhist,trainlabelsbool)
 print time.time() - ti
 
 #save classifier
@@ -67,7 +67,7 @@ t = time.time()
 
 print t-time.time()
 
-bla=S.predict_proba(testhist)
+bla=S.predict_proba(valhist)
 #bla=S.predict(testhist)
 
 

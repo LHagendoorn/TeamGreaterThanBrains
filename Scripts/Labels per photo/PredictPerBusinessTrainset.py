@@ -17,8 +17,12 @@ LabelsForPhotosVal.drop(LabelsForPhotosVal.columns[[0]], axis=1, inplace=True)
 LabelsForPhotosVal['photo_id'] = LabelsForPhotosVal['photo_id'].map(lambda x: str(x)[:-5]) #remove m.jpg
 LabelsForPhotosVal['photo_id'] = LabelsForPhotosVal['photo_id'].astype(int) #set type of photoids to int
 
+trainbus=np.load('../../trainSet.npy')
 
-UniqueBus=np.unique(trainlabels['business_id'])
+UniqueBus=trainbus
+
+UniqueBus.sort()
+
 NrUniqueBus=len(UniqueBus)
 NrPhotos=len(PhotoBusid['photo_id'])
 data=np.zeros((NrUniqueBus,9))

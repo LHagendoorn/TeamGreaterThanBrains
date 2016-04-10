@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import LinearSVC
 import time 
+from sklearn.svm import SVC
 
 submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/SubmissionFormat.csv',sep=',')
 
@@ -32,8 +33,8 @@ print 'done intitializing data'
 print 'Training SVM....'   
 ti = time.time()
 
-#S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(trainhist, trainlabelsbool)
-S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(trainhist, trainlabelsbool)
+S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(trainhist, trainlabelsbool)
+#S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(trainhist, trainlabelsbool)
 
 score = S.score(trainhist,trainlabelsbool)
 print time.time() - ti
@@ -56,8 +57,8 @@ t = time.time()
 
 print t-time.time()
 
-#bla=S.predict_proba(testhist)
-bla=S.predict(testhist)
+bla=S.predict_proba(testhist)
+#bla=S.predict(testhist)
 
 predList = []
 for row in bla:
@@ -68,8 +69,4 @@ for row in bla:
 
 #create dataframe object containing business_ids and list of strings
 
-submit['labels' ] = predList
-
-#save in csv file
-submit.to_csv('PerphotoSVMtestclasfTrainedOnAll.csv',index=False)
 

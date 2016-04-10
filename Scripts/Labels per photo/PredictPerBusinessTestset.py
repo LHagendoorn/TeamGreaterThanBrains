@@ -3,27 +3,32 @@
 Created on Tue Apr 05 22:45:42 2016
 
 @author: roosv_000
+Uses predictings of labels per photo to create a vector (normalized histogram) 
+respresenting the label predictions for a business.
+
 """
 import numpy as np
 import pandas as pd
 
-threshold=0.5
+#load which photoid is from which businessid. 
+PhotoBusid=pd.read_csv('test_photo_to_biz.csv', sep=',')
 
-PhotoBusid=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/test_photo_to_biz.csv', sep=',')
-LabelsForPhotosVal=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/pred_TestSetPerImage_TrainedOnAll.csv', sep=',')
+#load the labels predicted for every photo id.
+LabelsForPhotosVal=pd.read_csv('pred_TestSetPerImage_TrainedOnAll.csv', sep=',')
 
-#LabelsForPhotosVal=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/pred_ValSetPerImage.csv', sep=',')
-
+#adjust the photo id colomn to delete the .mjpg part of the string.
 LabelsForPhotosVal.drop(LabelsForPhotosVal.columns[[0]], axis=1, inplace=True)
 LabelsForPhotosVal['photo_id'] = LabelsForPhotosVal['photo_id'].map(lambda x: str(x)[:-5]) #remove m.jpg
 LabelsForPhotosVal['photo_id'] = LabelsForPhotosVal['photo_id'].astype(int) #set type of photoids to int
 
-
+#Make a list of all unique business id's, count number of businesses and nr of photos.
 UniqueBus=np.unique(PhotoBusid['business_id'])
 NrUniqueBus=len(UniqueBus)
 NrPhotos=len(PhotoBusid['photo_id'])
 data=np.zeros((NrUniqueBus,9))
 dingen=0
+
+#for all businesses, look for its photos, sum these photo labels (binary) and normalize
 #for x in range(0,22):
 for x in range(0,NrUniqueBus):
     busid=UniqueBus[x]
@@ -45,30 +50,8 @@ for x in range(0,NrUniqueBus):
     data[x]=normhist
     ding=allphotolabels.shape[0]
     dingen=dingen+ding
-    print(x)
     
     
-    
-#Classify by converting probabilities into binaries with help of the threshold.
-#data[data > threshold] = 1
-#data[data <= threshold] = 0
-
-#convert array ensembleprob [0 1 0 0 0 1] to list of strings ['2 6']
-#predList = []
-#for row in data:
- #       indices = [str(index) for index,number in enumerate(row) if number == 1.0]
-  #      sep = " "
-   #     ding = sep.join(indices)
-    #    predList.append(ding)
-        
-#create dataframe object containing business_ids and list of strings
-
-#import the example submission file for its stucture
-#submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/SubmissionFormat.csv',sep=',')
-#submit['labels' ] = predList
-
-#save in csv file
-#submit.to_csv('PerPhotoHistTreshold0.5.csv',index=False)
 
 #Make the stucture for output dataframe
 indexx=np.arange(NrUniqueBus)

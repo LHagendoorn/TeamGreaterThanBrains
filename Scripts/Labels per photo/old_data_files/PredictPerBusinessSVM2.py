@@ -26,14 +26,14 @@ PhotoBusid=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scrip
 UniqueBus=np.unique(PhotoBusid['business_id'])
 UniqueBus=pd.DataFrame(UniqueBus)
 
-testhist=np.load('../Labels per photo/data_array_test_9-04.2.npy')
-valhist=np.load('../Labels per photo/data_array_val_9-04.2.npy')
-veribus=np.load('../../verifSet.npy')
-trainlabels=pd.read_csv('../Ensembles/train.csv',sep=';')
+testhist=np.load('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Labels per photo/data_array_test_9-4onall.npy')
+valhist=np.load('../data_array_val_hist_9-4_OnTrainset.npy')
+veribus=np.load('../../../verifSet.npy')
+trainlabels=pd.read_csv('../../Ensembles/train.csv',sep=';')
 
 masklabels = trainlabels[['business_id']].isin(veribus).all(axis=1)
 vallabels=trainlabels.ix[masklabels]
-vallabels=vallabels.sort_values(by='business_id')
+#vallabels=vallabels.sort_values(by='business_id')
 
 # convert numeric labels to binary matrix
 def to_bool(s):
@@ -45,7 +45,9 @@ print 'done intitializing data'
 #TRAIN SVM
 print 'Training SVM....'   
 ti = time.time()
-S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(valhist, vallabelsbool)
+S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(valhist, ytrue)
+
+#S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(valhist, vallabelsbool)
 #score = S.score(x,y)
 print time.time() - ti
 
@@ -67,7 +69,7 @@ t = time.time()
 
 print t-time.time()
 
-bla=S.predict(testhist)
+bla=S.predict_proba(testhist)
 
 predList = []
 for row in bla:
@@ -78,8 +80,8 @@ for row in bla:
 
 #create dataframe object containing business_ids and list of strings
 
-submit['labels' ] = predList
+#submit['labels' ] = predList
 
 #save in csv file
-submit.to_csv('Ensembletest_perphotoSVM2.csv',index=False)
+#submit.to_csv('Ensembletest_perphotoSVM2.csv',index=False)
 
