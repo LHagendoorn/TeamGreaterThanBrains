@@ -23,8 +23,8 @@ from sklearn.cluster import MiniBatchKMeans
 data = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})
 print 'data loaded!!'
 
-km = joblib.load('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Scripts/Clustering/128MBKM.pkl')
-n_classes = 128
+km = joblib.load('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Scripts/Clustering/1024MBKM.pkl')
+n_classes = 1024
 print 'clusterer loaded!'
 #data = pd.concat([trainData, pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)}, nrows=5000)])
 #print('data loaded!')
