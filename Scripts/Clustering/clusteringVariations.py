@@ -8,6 +8,7 @@ Created on Fri Apr 01 18:18:32 2016
 import numpy as np
 import pandas as pd
 import sys
+import cv2
 
 from sklearn.mixture import GMM
 from sklearn.multiclass import OneVsRestClassifier

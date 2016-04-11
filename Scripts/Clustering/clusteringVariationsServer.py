@@ -20,42 +20,46 @@ bizWithoutLabel = [1627, 2661, 2941, 430] #shockingly enough, hardcoding is the 
 
 #REMOVE ROW LIMIT WHEN NOT TESTING
 #testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, nrows = 1)
-data = pd.read_csv('$HOME/features/Features_data/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)}, nrows=10)
-#data = pd.concat([trainData, pd.read_csv('$HOME/features/Features_data/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})])
+trainData = pd.read_csv('$HOME/features/Features_data/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})
+data = pd.concat([trainData, pd.read_csv('$HOME/features/Features_data/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})])
 print('data loaded!')
 
 #dependend on the instantiation
 classOptions = [2048, 1024, 512, 256, 128, 64]
-covOptions = ['diag', 'spherical', 'tied', 'full']
+#covOptions = ['diag', 'spherical', 'tied', 'full']
 arg = int(sys.argv[1])
-n_classes = classOptions[arg/4]
-cov_type = covOptions[arg%4]
+n_classes = classOptions[arg]
+#cov_type = covOptions[arg%4]
 
-print(str(n_classes) + cov_type)
+print(str(n_classes))
 
-km = MiniBatchKMeans(n_classes)
-km.fit(data)
+km = MiniBatchKMeans(n_clusters = n_classes,batch_size = 300, verbose = True)
+km.fit_transform(data)
 cluster_centers = km.cluster_centers_
 
-clusterer = GMM(n_components=n_classes, covariance_type=cov_type,n_iter=0, init_params = 'wc')
-clusterer.means_ = cluster_centers
-clusterer.fit(data)
-bicScore = clusterer.bic(data)
+print 'fitted & transformed!'
 
-clusterer.set_params(n_iter=1,init_params='')
-prevBicScore = bicScore+2
-while abs(prevBicScore - bicScore) >1:
-    clusterer.fit(data)
-    prevBicScore = bicScore
-    bicScore = clusterer.bic(data)
-    print('bicScore:')    
-    print(bicScore)
-    print('diff')
-    print(prevBicScore-bicScore)
+joblib.dump(km, str(n_classes) + 'MBKM.pkl')
+print 'saved model!'
+#clusterer = GMM(n_components=n_classes, covariance_type=cov_type,n_iter=0, init_params = 'wc')
+#clusterer.means_ = cluster_centers
+#clusterer.fit(data)
+#bicScore = clusterer.bic(data)
+
+#clusterer.set_params(n_iter=1,init_params='')
+#prevBicScore = bicScore+2
+#while abs(prevBicScore - bicScore) >1:
+#    clusterer.fit(data)
+#    prevBicScore = bicScore
+#    bicScore = clusterer.bic(data)
+#    print('bicScore:')    
+#    print(bicScore)
+#    print('diff')
+#    print(prevBicScore-bicScore)
 
 #save the clusters in case it's the best:
-joblib.dump(clusterer, str(n_classes) + cov_type + 'GMMEM.pkl')
-print('Saved the fitted clusterer')
+#joblib.dump(clusterer, str(n_classes) + cov_type + 'GMMEM.pkl')
+#print('Saved the fitted clusterer')
 
 #get the businessId's for the train and verification set (not including the empty labels)
 #trainBizIds, verifBizIds = getSplit()
