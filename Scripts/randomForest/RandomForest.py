@@ -34,38 +34,69 @@ def createClassification(forest,Xtest, XtestDF):
 '''Predicts the probabilities for the classes for the test data and saves it in a csv file. Returns true if csv file is created.'''
 def createProbabilities(forest,Xtest):
     Yprob = forest.predict_proba(Xtest)
-    return createProbFile(Yprob)
+    return createProbFile(Yprob, 'probColorValidationSet')
 
 '''Loads the data and turns it into arrays of the correct shape. Returns the data in a dictionary.'''
 def getData():
+
+    '''LOAD TRAIN DATA'''
+
     # Load train data: X
     featureData = load_features('input')
-    Xtrain = featureData['TRAIN_F']
-    Xcols = Xtrain.columns.tolist() #business_id, r_mean, r_sd, g_mean, g_sd, b_mean, b_sd, imagecount, h_mean, h_sd, w_mean, w_sd
+    XtrainAll = featureData['TRAIN_F']
+    Xcols = XtrainAll.columns.tolist() #business_id, r_mean, r_sd, g_mean, g_sd, b_mean, b_sd, imagecount, h_mean, h_sd, w_mean, w_sd
 
     # Load train data: Y
     data = load('input')
-    Ytrain = data['Y_TRAIN']
-    Ycols = Ytrain.columns.tolist() #business_id, 0, 1, 2, 3, 4, 5, 6, 7, 8
+    YtrainAll = data['Y_TRAIN']
+    Ycols = YtrainAll.columns.tolist() #business_id, 0, 1, 2, 3, 4, 5, 6, 7, 8
 
-    '''CREATE ARRAYS'''
+    '''SPLIT TRAINALL, TRAIN AND VALIDATION SET'''
 
     #merge X and Y. Reasons: order should be the same. Labels could contain businesses that are removed during preprocessing.
-    trainData = pd.merge(Xtrain, Ytrain, on='business_id')
+    trainAllData = pd.merge(XtrainAll, YtrainAll, on='business_id')
 
-    #split Xtrain and Y train into two arrays, without business_id!
+    #load which business ids should be in the train set and which should be in the validation set
+    trainSetIds = np.load('input/trainSet.npy')
+    validSetIds = np.load('input/verifSet.npy')
+
+    #create dataframes of photo indices for train and validation set
+    trainData = trainAllData[trainAllData.business_id.isin(trainSetIds)]
+    validationData = trainAllData[trainAllData.business_id.isin(validSetIds)]
+
+    #save business_id order of all sets
+    busIdsTrainAll = trainAllData['business_id'].values
+    busIdsTrain = trainData['business_id'].values
+    busIdsVal = validationData['business_id'].values
+
+    #split X and Y data, remove business_ids
     del Xcols[0] #remove business_id from list
     del Ycols[0] #remove business_id from list
+    XtrainAll = trainAllData[Xcols].values
+    YtrainAll = trainAllData[Ycols].values
     Xtrain = trainData[Xcols].values
     Ytrain = trainData[Ycols].values
+    Xvalidation = validationData[Xcols].values
+    Yvalidation = validationData[Ycols].values
+
+    '''LOAD TEST DATA'''
 
     #create array from test data
     XtestDF = featureData['TEST_F']
     Xtest = XtestDF[Xcols].values
 
+    '''SAVE ALL DATA IN DICTIONARY'''
+
     data = {
         'Xtrain' : Xtrain,
+        'busIdsTrain' : busIdsTrain,
+        'XtrainAll' : XtrainAll,
+        'busIdsTrainAll' : busIdsTrainAll,
+        'Xvalidation' : Xvalidation,
+        'busIdsVal' : busIdsVal,
         'Ytrain' : Ytrain,
+        'YtrainAll' : YtrainAll,
+        'Yvalidation' : Yvalidation,
         'Xtest' : Xtest,
         'XtestDF' : XtestDF,
     }
