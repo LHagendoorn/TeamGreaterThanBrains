@@ -4,8 +4,8 @@ Created on Wed Mar 02 14:54:52 2016
 
 @author: roosv_000
 
-This script reduces the images in the train photos folder to 100 x 100 pixels, if 
-the orginal image is already smaller then 100 x 100 pixels it is put in a seperate folder. 
+This script reduces the images in the train photos folder to 250 x 250 pixels, if 
+the orginal image is already smaller then 250 x 250 pixels it is put in a seperate folder. 
 The names of the photo files stay the same exect an 'r' is added. 
 
 If you want to use this script do not forget to change the directories. 

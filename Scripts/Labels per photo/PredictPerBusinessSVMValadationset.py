@@ -3,6 +3,10 @@
 Created on Sat Apr 09 00:15:51 2016
 
 @author: roosv_000
+
+This script takes the histogram vectors for all businesses from the trainset and the valadation set. 
+For the train set labels are known so a linear/poly SVM is trained on the train set histograms and the ground truth.
+This trained SVM it then used to predict probabilties for labels/labels for the testset.
 """
 import numpy as np
 import pandas as pd
@@ -11,28 +15,22 @@ from sklearn.svm import LinearSVC
 from sklearn.svm import SVC
 import time 
 
-submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/SubmissionFormat.csv',sep=',')
-
-PhotoBusid=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/train_photo_to_biz_ids.csv', sep=';')
-
+#load the histogram feature vectors for the businesses in the trainset and valadation set
 valhist=np.load('../Labels per photo/data_array_val_hist_9-4_OnTrainset.npy')
 trainhist=np.load('../Labels per photo/data_array_train_hist_10-4_OnTrainset.npy')
 
+#load trainbusinesses and their labels
 trainlabels=pd.read_csv('../Ensembles/train.csv',sep=';')
 
+#load the business id's for the valadation set, 
 trainbus=np.load('../../trainSet.npy')
-trainlabels=pd.read_csv('../Ensembles/train.csv',sep=';')
 
+# add the labels to the train set businesses
 masklabels = trainlabels[['business_id']].isin(trainbus).all(axis=1)
 traintrain=trainlabels.ix[masklabels]
 trainlab=traintrain.sort_values(by='business_id')
-#df = pd.DataFrame(trainhist)
-#df=df.ix[masklabels]
-#df=pd.DataFrame.as_matrix(df)
 
-#trainhist.drop(trainhist.index[masklabels])
-
-# convert numeric labels to binary matrix
+# convert numeric labels of the train set businesses to binary matrix
 def to_bool(s):
     return(pd.Series([1L if str(i) in str(s).split(' ') else 0L for i in range(9)]))
 trainlabelsbool = trainlab['labels'].apply(to_bool)
@@ -43,9 +41,8 @@ print 'done intitializing data'
 print 'Training SVM....'   
 ti = time.time()
 
-S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(trainhist, trainlabelsbool)
-#S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(trainhist, trainlabelsbool)
-
+#S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(trainhist, trainlabelsbool)
+S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(trainhist, trainlabelsbool)
 score = S.score(trainhist,trainlabelsbool)
 print time.time() - ti
 
@@ -56,19 +53,11 @@ import pickle
 with open('svm.pkl', 'wb') as f:
     pickle.dump(S, f)
 
-## and later you can load it
-#with open('filename.pkl', 'rb') as f:
-#    clf = pickle.load(f)
-
-
-
-#TESTDATA
+#Use the trained SVM to predict testdata
 t = time.time()
-
 print t-time.time()
-
-bla=S.predict_proba(valhist)
-#bla=S.predict(testhist)
+Predictions_Valset=S.predict(valhist)
+#Predictions_Valset=S.predict(testhist)
 
 
 

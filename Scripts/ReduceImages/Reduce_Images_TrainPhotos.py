@@ -11,7 +11,6 @@ The names of the photo files stay the same exect an 'r' is added.
 If you want to use this script do not forget to change the directories. 
 """
 
-import matplotlib.pyplot as plt
 import PIL 
 from PIL import Image
 import os

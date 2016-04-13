@@ -18,17 +18,11 @@ The names of the photo files stay the same exect an 'r' is added.
 If you want to use this script do not forget to change the directories.  
 
 """
-
-import matplotlib.pyplot as plt
 import PIL 
 from PIL import Image
 import os
-import pandas as pd
 
-#277850 foto in de breedte
-#277845 foto in de lengte
-
-# set paramaters
+# set paramaters of the desired dimensions for the foto's 
 new_width=100
 new_height=100
 number_of_pixels = 100
@@ -46,8 +40,6 @@ test_photos_list=[s.replace('.jpg', '') for s in test_photos_list]
 
 #get the number of images in the list 
 number_of_images=len(test_photos_list)
-
-#number_of_images=100 # for testing
 
 # for every image do the following:
 for x in range(0, number_of_images-1):

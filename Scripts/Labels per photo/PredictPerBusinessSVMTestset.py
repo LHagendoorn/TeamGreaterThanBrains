@@ -3,6 +3,10 @@
 Created on Sat Apr 09 00:15:51 2016
 
 @author: roosv_000
+
+This script takes the histogram vectors for all businesses from the traindata and the test data. 
+For the train data labels are known so a linear/poly SVM is trained on the traindata histograms and the ground truth.
+This trained SVM it then used to predict probabilties for labels/labels for the testset.
 """
 import numpy as np
 import pandas as pd
@@ -11,15 +15,12 @@ from sklearn.svm import LinearSVC
 import time 
 from sklearn.svm import SVC
 
-submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/SubmissionFormat.csv',sep=',')
-
-PhotoBusid=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/train_photo_to_biz_ids.csv', sep=';')
-
+#load the histogram feature vectors for the businesses in the testset and trainset resp.
 testhist=np.load('../Labels per photo/data_array_test_9-4onall.npy')
 trainhist=np.load('../Labels per photo/data_array_train_9-4onall.npy')
 
+#load trainbusinesses and their labels
 trainlabels=pd.read_csv('../Ensembles/train.csv',sep=';')
-
 trainlabels=trainlabels.sort_values(by='business_id')
 
 # convert numeric labels to binary matrix
@@ -32,9 +33,8 @@ print 'done intitializing data'
 #TRAIN SVM
 print 'Training SVM....'   
 ti = time.time()
-
-S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(trainhist, trainlabelsbool)
-#S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(trainhist, trainlabelsbool)
+#S = OneVsRestClassifier(SVC(kernel='poly',probability=True)).fit(trainhist, trainlabelsbool)
+S = OneVsRestClassifier(LinearSVC(random_state=0)).fit(trainhist, trainlabelsbool)
 
 score = S.score(trainhist,trainlabelsbool)
 print time.time() - ti
@@ -46,27 +46,17 @@ import pickle
 with open('svm.pkl', 'wb') as f:
     pickle.dump(S, f)
 
-## and later you can load it
-#with open('filename.pkl', 'rb') as f:
-#    clf = pickle.load(f)
 
-
-
-#TESTDATA
+#Use the trained SVM to predict testdata
 t = time.time()
 
 print t-time.time()
 
-bla=S.predict_proba(testhist)
-#bla=S.predict(testhist)
+Predictions_Testset=S.predict(testhist)
+#Predictions_Testset=S.predict_proba(testhist)
 
-predList = []
-for row in bla:
-        indices = [str(index) for index,number in enumerate(row) if number == 1.0]
-        sep = " "
-        ding = sep.join(indices)
-        predList.append(ding)
 
-#create dataframe object containing business_ids and list of strings
+        
+
 
 

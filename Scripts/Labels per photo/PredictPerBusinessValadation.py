@@ -3,6 +3,9 @@
 Created on Tue Apr 05 22:45:42 2016
 
 @author: roosv_000
+Labels per photo are predited with an SVM, this script uses these prediced labels per photo to create a vector (normalized histogram) 
+respresenting the label predictions per business. The business feature vectors are in the output dataframe.
+It does this for all businesses in the Valadationset.
 """
 import numpy as np
 import pandas as pd
@@ -20,12 +23,10 @@ LabelsForPhotosVal['photo_id'] = LabelsForPhotosVal['photo_id'].astype(int) #set
 
 veribus=np.load('../../verifSet.npy')
 UniqueBus=veribus
-#UniqueBus=np.unique(PhotoBusid['business_id'])
 NrUniqueBus=len(UniqueBus)
 NrPhotos=len(PhotoBusid['photo_id'])
 data=np.zeros((NrUniqueBus,9))
-dingen=0
-#for x in range(0,22):
+
 for x in range(0,NrUniqueBus):
     busid=UniqueBus[x]
     ind,=np.where(PhotoBusid['business_id']==busid)
@@ -44,32 +45,7 @@ for x in range(0,NrUniqueBus):
         normhist=floatsumlabels/maxnrlabels
         
     data[x]=normhist
-    ding=allphotolabels.shape[0]
-    dingen=dingen+ding
     print(x)
-    
-    
-    
-#Classify by converting probabilities into binaries with help of the threshold.
-#data[data > threshold] = 1
-#data[data <= threshold] = 0
-
-#convert array ensembleprob [0 1 0 0 0 1] to list of strings ['2 6']
-#predList = []
-#for row in data:
- #       indices = [str(index) for index,number in enumerate(row) if number == 1.0]
-  #      sep = " "
-   #     ding = sep.join(indices)
-    #    predList.append(ding)
-        
-#create dataframe object containing business_ids and list of strings
-
-#import the example submission file for its stucture
-#submit = pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Scripts/Ensembles/SubmissionFormat.csv',sep=',')
-#submit['labels' ] = predList
-
-#save in csv file
-#submit.to_csv('PerPhotoHistTreshold0.5.csv',index=False)
 
 #Make the stucture for output dataframe
 indexx=np.arange(NrUniqueBus)

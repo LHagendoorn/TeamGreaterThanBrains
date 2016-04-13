@@ -3,9 +3,9 @@
 Created on Tue Apr 05 22:45:42 2016
 
 @author: roosv_000
-Uses predictings of labels per photo to create a vector (normalized histogram) 
-respresenting the label predictions for a business.
-
+Labels per photo are predited with an SVM, this script uses these prediced labels per photo to create a vector (normalized histogram) 
+respresenting the label predictions per business. The business feature vectors are in the output dataframe.
+It does this for all businesses in the testset (the SVM is trained on whole traindataset)
 """
 import numpy as np
 import pandas as pd
@@ -26,7 +26,6 @@ UniqueBus=np.unique(PhotoBusid['business_id'])
 NrUniqueBus=len(UniqueBus)
 NrPhotos=len(PhotoBusid['photo_id'])
 data=np.zeros((NrUniqueBus,9))
-dingen=0
 
 #for all businesses, look for its photos, sum these photo labels (binary) and normalize
 #for x in range(0,22):
@@ -48,8 +47,7 @@ for x in range(0,NrUniqueBus):
         normhist=floatsumlabels/maxnrlabels
         
     data[x]=normhist
-    ding=allphotolabels.shape[0]
-    dingen=dingen+ding
+    
     
     
 
