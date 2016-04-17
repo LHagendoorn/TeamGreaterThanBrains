@@ -1,3 +1,5 @@
+#@author: DiedeKemper
+
 '''Creates the classification file'''
 
 import pandas as pd
