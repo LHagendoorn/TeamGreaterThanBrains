@@ -11,16 +11,15 @@ from sklearn.cluster import MiniBatchKMeans
 import pandas as pd
 
 ###############################################################################
-# Load sample data
+''''Load sample data'''
 #caffeatures = sio.loadmat('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Features/caffe/caffe_features_werktdit.mat')['feats'].transpose()
 testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, nrows = 1)
 caffeatures = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in list(testRead)})
 
 
 ###############################################################################
-# Compute clustering with KMeans
+'''Compute clustering with KMeans'''
 
-print('HOOOOOI')
 #km = KMeans(n_clusters=100, n_jobs = -2)
 km = MiniBatchKMeans(n_clusters=100)
 km.fit(caffeatures)

@@ -3,6 +3,7 @@
 Created on Tue Mar 01 19:25:13 2016
 
 @author: Laurens
+Quick test for the average colour extraction
 """
 import numpy;
 from PIL import Image;

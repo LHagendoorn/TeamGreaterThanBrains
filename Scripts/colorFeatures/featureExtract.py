@@ -3,6 +3,7 @@
 Created on Tue Mar 01 19:25:13 2016
 
 @author: Laurens
+Generates the mean and variance of the rgb values of all the images per business
 """
 import numpy;
 from PIL import Image;

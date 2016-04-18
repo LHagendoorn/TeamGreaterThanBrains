@@ -3,6 +3,7 @@
 Created on Sat Apr 09 12:51:45 2016
 
 @author: Laurens
+Takes the actual labels for each business and transforms it into a binary representation.
 """
 
 import pandas as pd

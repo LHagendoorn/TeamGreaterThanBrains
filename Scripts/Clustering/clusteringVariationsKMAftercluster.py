@@ -3,11 +3,13 @@
 Created on Fri Apr 01 18:18:32 2016
 
 @author: Laurens
+
+Loads in a trained clusterer and generates a score based on selecting each of
+the clusters that are closer than the mean distance
 """
 
 import numpy as np
 import pandas as pd
-import sys
 
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import SVC
@@ -16,69 +18,23 @@ from sklearn.externals import joblib
 from sklearn.metrics import f1_score
 from sklearn.cluster import MiniBatchKMeans
 
-#bizWithoutLabel = [1627, 2661, 2941, 430] #shockingly enough, hardcoding is the most effiient way I can come up with at the moment to not have to load an entirely new csv file
-
 #REMOVE ROW LIMIT WHEN NOT TESTING
-#testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, nrows = 1)
 data = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)})
 print 'data loaded!!'
 
 km = joblib.load('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Scripts/Clustering/1024MBKM.pkl')
 n_classes = 1024
 print 'clusterer loaded!'
-#data = pd.concat([trainData, pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)}, nrows=5000)])
-#print('data loaded!')
-
-#dependend on the instantiation
-#classOptions = [2048, 1024, 512, 256, 128, 64]
-#covOptions = ['diag', 'spherical', 'tied', 'full']
-
-#arg = int(sys.argv[1])
-#n_classes = classOptions[arg]
-#n_classes = classOptions[0]
-
-#cov_type = covOptions[arg%4]
-
-#print(str(n_classes))
-
-#km = MiniBatchKMeans(n_clusters = n_classes,batch_size = 100, verbose = True)
 pointsToClusterDist = km.transform(data)
 meanDist = np.mean(pointsToClusterDist,axis=0)
-#cluster_centers = km.cluster_centers_
-
-#print 'fitted & transformed!'
-
-#joblib.dump(km, str(n_classes) + 'MBKM.pkl')
-#print 'saved model!'
-#clusterer = GMM(n_components=n_classes, covariance_type=cov_type,n_iter=0, init_params = 'wc')
-#clusterer.means_ = cluster_centers
-#clusterer.fit(data)
-#bicScore = clusterer.bic(data)
-
-#clusterer.set_params(n_iter=1,init_params='')
-#prevBicScore = bicScore+2
-#while abs(prevBicScore - bicScore) >1:
-#    clusterer.fit(data)
-#    prevBicScore = bicScore
-#    bicScore = clusterer.bic(data)
-#    print('bicScore:')    
-#    print(bicScore)
-#    print('diff')
-#    print(prevBicScore-bicScore)
-
-#save the clusters in case it's the best:
-#joblib.dump(clusterer, str(n_classes) + cov_type + 'GMMEM.pkl')
-#print('Saved the fitted clusterer')
 
 #get the businessId's for the train and verification set (not including the empty labels)
-#trainBizIds, verifBizIds = getSplit()
 trainBizIds = np.load('C:/Users/Laurens/Documents/TeamGreaterThanBrains/trainSet.npy')
 verifBizIds = np.load('C:/Users/Laurens/Documents/TeamGreaterThanBrains/verifSet.npy')
 
 
 #=============== Prepare the clusteredTrainSet: ==================
 photoToBiz = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/train_photo_to_biz_ids.csv', sep=',')    
-#photoToBiz = photoToBiz[~photoToBiz.business_id.isin(bizWithoutLabel)] #remove biz without a label
 clusteredTrainSet = pd.DataFrame(index = trainBizIds, columns = range(n_classes))
 clusteredVerifSet = pd.DataFrame(index = verifBizIds, columns = range(n_classes))
 photoToIndex = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/photo_order_train.csv', sep=',', header=None).reset_index(level=0)
@@ -89,7 +45,6 @@ for busId in trainBizIds:
     photoIds = photoToBiz.loc[photoToBiz['business_id'] == busId].photo_id.to_frame()
     photoIds = photoIds.photo_id.map(lambda x: str(x)+ 'm.jpg')
     photoIds = photoIds.to_frame()
-#    featureIds = photoIds()
     featureIds = pd.merge(photoToIndex, photoIds, left_on=0, right_on='photo_id')['index'] #Select only the indices of the images of this business
     bizPoints = data.iloc[featureIds.values]
     bizPointsDists = km.transform(bizPoints)

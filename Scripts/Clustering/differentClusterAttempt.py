@@ -3,6 +3,7 @@
 Created on Sat Apr 09 20:00:34 2016
 
 @author: Laurens
+Follows clusteringVariationsKMAfterCluster, but with a different selection criteria for clustering of the eventual test set
 """
 
 import numpy as np

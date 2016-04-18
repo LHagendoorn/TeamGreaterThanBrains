@@ -3,6 +3,8 @@
 Created on Tue Mar 22 23:05:48 2016
 
 @author: Laurens
+
+Mean shift attempt, turns out this was too slow/memory intesive to be practical
 """
 
 import numpy as np
@@ -11,14 +13,14 @@ import pandas as pd
 
 
 ###############################################################################
-# Load sample data
+"""Load sample data"""
 #caffeatures = sio.loadmat('C:/Users/Laurens/Documents/TeamGreaterThanBrains/Features/caffe/caffe_features_werktdit.mat')['feats']
 #caffeatures = caffeatures.transpose()
 testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, nrows = 1)
 caffeatures = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in list(testRead)})
 
 ###############################################################################
-# Compute clustering with MeanShift
+""" Compute clustering with MeanShift"""
 
 # The following bandwidth can be automatically detected using
 bandwidth = estimate_bandwidth(testRead, quantile=0.2, n_samples=500)
@@ -34,7 +36,7 @@ n_clusters_ = len(labels_unique)
 print("number of estimated clusters : %d" % n_clusters_)
 
 ###############################################################################
-# Plot result
+""" Plot result """
 import matplotlib.pyplot as plt
 from itertools import cycle
 

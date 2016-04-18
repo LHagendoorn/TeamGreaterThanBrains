@@ -3,6 +3,10 @@
 Created on Fri Apr 01 18:18:32 2016
 
 @author: Laurens
+
+The cluster variations have been run on the server a couple times, unfortunatly
+the ratio memory/cores needed was rather skewed and that seemed a waste of computing power, plus in the end it ran fine
+on our own machines. (the final version of this file only exists on the server)
 """
 
 import numpy as np

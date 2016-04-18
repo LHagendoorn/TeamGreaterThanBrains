@@ -3,6 +3,9 @@
 Created on Mon Apr 11 16:03:55 2016
 
 @author: Laurens
+
+Takes a minibatch kmeans cluster and generates both the verification set prediction as well as the prediction for the test
+data
 """
 import numpy as np
 import pandas as pd
@@ -80,8 +83,8 @@ labelsTrainSet = binLabels[binLabels.business_id.isin(trainBizIds)]
 labelsTrainSet = labelsTrainSet.sort_values('business_id')
 del labelsTrainSet['business_id']
 #----- fit SVM
-classifier = OneVsRestClassifier(SVC(kernel='poly', probability = True)).fit(clusteredTrainSet.values, labelsTrainSet)
-#classifier = OneVsRestClassifier(LinearSVC()).fit(clusteredTrainSet.values, labelsTrainSet)
+#classifier = OneVsRestClassifier(SVC(kernel='poly', probability = True)).fit(clusteredTrainSet.values, labelsTrainSet)
+classifier = OneVsRestClassifier(LinearSVC()).fit(clusteredTrainSet.values, labelsTrainSet)
 clusteredVerifSet = clusteredVerifSet.sort_index()
 predictions = classifier.predict_proba(clusteredVerifSet)
 

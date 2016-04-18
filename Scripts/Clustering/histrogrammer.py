@@ -3,6 +3,7 @@
 Created on Wed Mar 30 12:57:34 2016
 
 @author: Laurens
+Retrieves the histograms per businness with how many times an instance is assigned to a cluster.
 """
 
 import numpy as np

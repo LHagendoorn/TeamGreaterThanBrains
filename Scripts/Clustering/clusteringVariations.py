@@ -3,12 +3,14 @@
 Created on Fri Apr 01 18:18:32 2016
 
 @author: Laurens
+
+Does evertying from fitting clusters of the specified number, as well as score it
+Uses a GMM to find the clusters, but this was way too memory intesive
 """
 
 import numpy as np
 import pandas as pd
 import sys
-import cv2
 
 from sklearn.mixture import GMM
 from sklearn.multiclass import OneVsRestClassifier
@@ -19,12 +21,9 @@ from sklearn.metrics import f1_score
 bizWithoutLabel = [1627, 2661, 2941, 430] #shockingly enough, hardcoding is the most effiient way I can come up with at the moment to not have to load an entirely new csv file
 
 #REMOVE ROW LIMIT WHEN NOT TESTING
-#testRead = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, nrows = 1)
 data = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_train.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)}, nrows = 2)
-#data = pd.concat([trainData, pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/features/caffe_features_test.csv', header=None, sep=',', engine='c', dtype={c: np.float64 for c in np.ones(4096)}, nrows=100)])
 print('data loaded!')
 
-#------------                     TODO take command line arguments to make this dependend on the instatiation
 #dependend on the instantiation
 classOptions = [2048, 1024, 512, 256, 128, 64]
 covOptions = ['diag', 'spherical', 'tied', 'full']

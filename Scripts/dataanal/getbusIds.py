@@ -3,6 +3,7 @@
 Created on Wed Mar 23 16:00:02 2016
 
 @author: Laurens
+Used to analyse how many images were removed (per business) by changing the minimum image size
 """
 
 import pandas as pd

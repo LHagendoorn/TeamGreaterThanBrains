@@ -3,6 +3,8 @@
 Created on Tue Mar 01 19:25:13 2016
 
 @author: Laurens
+Generates the mean and variance of the rgb values of all the images per business
+using multiple cores
 """
 import numpy;
 from PIL import Image;
@@ -19,10 +21,6 @@ def getFeatures(busId):
     train_photos = pd.read_csv('C:/Users/Laurens/Documents/uni/MLP/data/test_photo_to_biz.csv',sep=',')
     photoIds = train_photos.loc[train_photos['business_id'] == busId].photo_id.ravel()
     #intialise numpy arrays
-    #r = [];
-    #g = [];
-    #b = [];
-
     rsum = numpy.int64(0);
     gsum = numpy.int64(0);
     bsum = numpy.int64(0);        

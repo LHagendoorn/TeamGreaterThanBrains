@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Gives a stratified split of the train data
 Created on Fri Apr 01 13:51:40 2016
 
 @author: Laurens
+Gives a stratified split of the train data
 """
 import pandas as pd
 import numpy as np
@@ -12,13 +12,9 @@ from  sklearn.cross_validation import StratifiedShuffleSplit
 def getSplit() :
     bizLabels = pd.read_csv('c:/Users/Laurens/documents/uni/MLP/data/train.csv', sep=',')
     bizLabels.columns = ['busId','lbls'] #labels is a reserved keyword!!
-    #photoToBiz = pd.read_csv('c:/Users/Laurens/documents/uni/MLP/data/train_photo_to_biz_ids.csv', sep=',')
-    
+
     nBizPerLabel = bizLabels.groupby('lbls').count()
     nBizPerLabel.columns = ['bizCounts']
-    
-    #nPhotoPerBiz = photoToBiz.groupby('business_id').count()
-    #nPhotoPerBiz.columns = ['photoCounts']
     
     includedLabels = nBizPerLabel.loc[nBizPerLabel['bizCounts']>1]
     excludedLabels = nBizPerLabel.loc[nBizPerLabel['bizCounts']==1]
