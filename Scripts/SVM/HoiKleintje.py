@@ -1,4 +1,0 @@
-
-
-def zegHoi():
-    print 'hoi'

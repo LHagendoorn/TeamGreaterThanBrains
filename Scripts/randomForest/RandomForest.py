@@ -1,4 +1,5 @@
 '''
+@author: DiedeKemper
 Trains a random forest to the data with features per business.
 Gives a classification for the test data.
 '''
