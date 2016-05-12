@@ -1,5 +1,6 @@
 '''
-This script was used to create the csv files containing all metadata of all sets.
+This script was used to create the csv files containing all metadata of all sets. It splits the traindata into a
+trainset and validationset.
 @author: Diede Kemper
 '''
 
