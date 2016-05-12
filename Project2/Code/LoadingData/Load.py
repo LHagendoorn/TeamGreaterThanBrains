@@ -3,33 +3,62 @@ Class responsible for loading all types of data in our project.
 @author: Diede Kemper
 '''
 
-import csv
-from PIL import Image
-from itertools import chain #to flatten lists
+'''
+Usage:
+Include: "from Load import *" to import section of code.
+Now you can call the functions in this file.
+
+Five datasets:
+- testdata = data without correct labels
+- traindata = validationset + trainset
+- validationset = 1/3rd of traindata
+- trainset = 2/3rd of traindata
+- dummy = 10 images to test code with
+
+Three or four functions per set:
+- load_#SET#_caffefeatures()
+- load_#SET#_filenames()
+- load_#SET#_indices()
+- load_#SET#_labels()
+
+Functions return either a 1d list or 2d array
+'''
 
 '''
-This file assumes that all images are present in the directory 'images\\train' or 'images\\test'
-
-This file assumes to be in the same directory as the following files:
+This file assumes to be in the same directory as the following csv files:
 testdata_filenames
 testdata_indices
+testdata_caffefeatures
 
 traindata_filenames
 traindata_indices
 traindata_labels
+traindata_caffefeatures
 
 trainset_filenames
 trainset_indices
 trainset_labels
+trainset_caffefeatures
 
 validationset_filenames
 validationset_indices
 validationset_labels
+validationset_caffefeatures
 
-#TODO add features csv files
+dummy_filenames
+dummy_indices
+dummy_labels
+dummy_caffefeatures
+
 '''
 
-'''Getting a specific image'''
+import csv
+import pandas as pd
+from PIL import Image
+from itertools import chain #to flatten lists
+
+'''Getting a specific image
+Note: These methods assume that all images are present in the directories 'images\\train' and 'images\\test' '''
 
 #filename = string of filename 'img_XXX.jpg'
 #testset = boolean, true if test set, false otherwise
@@ -70,6 +99,11 @@ def load_validationset_filenames():
         reader = csv.reader(f)
         return list(chain.from_iterable(list(reader)))
 
+def load_dummy_filenames():
+    with open('dummy_filenames.csv', 'rb') as f:
+        reader = csv.reader(f)
+        return list(chain.from_iterable(list(reader)))
+
 '''Loading of image indices'''
 
 def load_testdata_indices():
@@ -92,6 +126,11 @@ def load_validationset_indices():
         reader = csv.reader(f)
         return [int(x) for x in list(chain.from_iterable(list(reader)))]
 
+def load_dummy_indices():
+    with open('dummy_indices.csv', 'rb') as f:
+        reader = csv.reader(f)
+        return [int(x) for x in list(chain.from_iterable(list(reader)))]
+
 '''Loading of correct class labels'''
 
 def load_traindata_labels():
@@ -109,21 +148,34 @@ def load_validationset_labels():
         reader = csv.reader(f)
         return [int(x) for x in list(chain.from_iterable(list(reader)))]
 
+def load_dummy_labels():
+    with open('dummy_labels.csv', 'rb') as f:
+        reader = csv.reader(f)
+        return [int(x) for x in list(chain.from_iterable(list(reader)))]
+
 '''Loading of caffe features'''
 
 def load_testdata_caffefeatures():
-    # TODO Implement this function
-    pass
+    df = pd.read_csv('testdata_caffefeatures.csv',header=None)
+    df.drop(df.columns[0], axis=1, inplace=True)
+    return df.values
 
 def load_traindata_caffefeatures():
-    # TODO Implement this function
-    pass
+    df = pd.read_csv('traindata_caffefeatures.csv',header=None)
+    df.drop(df.columns[0], axis=1, inplace=True)
+    return df.values
 
 def load_trainset_caffefeatures():
-    # TODO Implement this function
-    pass
+    df = pd.read_csv('trainset_caffefeatures.csv',header=None)
+    df.drop(df.columns[0], axis=1, inplace=True)
+    return df.values
 
 def load_validationset_caffefeatures():
-    # TODO Implement this function
-    pass
+    df = pd.read_csv('validationset_caffefeatures.csv',header=None)
+    df.drop(df.columns[0], axis=1, inplace=True)
+    return df.values
 
+def load_dummy_caffefeatures():
+    df = pd.read_csv('dummy_caffefeatures.csv',header=None)
+    df.drop(df.columns[0], axis=1, inplace=True)
+    return df.values
