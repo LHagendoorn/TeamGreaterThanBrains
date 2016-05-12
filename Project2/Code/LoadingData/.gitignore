@@ -1,0 +1,4 @@
+testdata_caffefeatures.csv
+traindata_caffefeatures.csv
+trainset_caffefeatures.csv
+validationset_caffefeatures.csv
