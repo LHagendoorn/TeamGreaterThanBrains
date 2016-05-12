@@ -33,5 +33,5 @@ preds = clf.predict_proba(x_testdata)
 predsdf = pd.DataFrame(preds)
 
 #Write outputfile
-to_outputfile(predsdf,1,'testing')
+to_outputfile(predsdf,3,'linearSVC')
 
