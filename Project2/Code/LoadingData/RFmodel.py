@@ -21,7 +21,7 @@ y_train = df_traindata_lab
 x_test = df_testdata_caf
 
 # Train model
-rf = RandomForestClassifier()
+rf = RandomForestClassifier(n_estimators=500)
 rf.fit(x_train, y_train)
 
 print("--- train model: %s seconds ---" % round((time.time() - start_time),2))
