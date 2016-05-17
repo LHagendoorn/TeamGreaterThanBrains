@@ -21,7 +21,7 @@ import numpy
 def to_outputfile(predsdf,submnumber,name):
     labels_testdata = load_testdata_filenames()
     predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
-    predsdf[predsdf < 0.01] = 0.01        
+    predsdf[predsdf < 0.001] = 0.001        
     df = pd.DataFrame({ 'img' : numpy.asarray(labels_testdata),
                     'c0' : predsdf.iloc[:,0],
                     'c1' : predsdf.iloc[:,1],

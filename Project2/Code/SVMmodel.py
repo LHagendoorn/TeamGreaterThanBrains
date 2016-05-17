@@ -45,5 +45,5 @@ predsdf.to_pickle('predictions_traindata_padded_rbf.pkl')  # where to save it, u
 #Write outputfile
 check = predsdf
 predsdf = check
-to_outputfile(check,5,'rbfSVC_traindata_padded_3dec_highten')
+to_outputfile(check,7,'rbfSVC_traindata_padded_3dec_highten')
 
