@@ -2,17 +2,17 @@ import pandas as pd
 import time
 
 from sklearn.ensemble import RandomForestClassifier
-from Load import *
-from Output import *
+from IO import Input
+from IO import Output
 
 start_time = time.time()
 
 # load train data
-df_traindata_caf = load_traindata_caffefeatures()
-df_traindata_lab = load_traindata_labels()
+df_traindata_caf = Input.load_traindata_caffefeatures()
+df_traindata_lab = Input.load_traindata_labels()
 
 # Load test data
-df_testdata_caf = load_testdata_caffefeatures()
+df_testdata_caf = Input.load_testdata_caffefeatures()
 
 print("--- load data: %s seconds ---" % round((time.time() - start_time),2))
 
@@ -33,7 +33,7 @@ predsdf = pd.DataFrame(preds)
 print("--- prediction: %s seconds ---" % round((time.time() - start_time),2))
 
 # Create ouput file
-to_outputfile(predsdf,1,'RF')
+Output.to_outputfile(predsdf,1,'RF')
 
 print("--- generate output: %s seconds ---" % round((time.time() - start_time),2))
 
