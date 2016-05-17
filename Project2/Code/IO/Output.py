@@ -4,7 +4,7 @@ Created on Thu May 12 16:12:25 2016
 
 @author: DanielleT
 """
-from Load import *
+from Input import *
 import time
 import numpy
 
@@ -36,5 +36,5 @@ def to_outputfile(predsdf,submnumber,name):
     df = df[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
     timestr = time.strftime("%Y%m%d")
     filename = 'outputfile_' + timestr + '_' + str(submnumber) + '_' + name + '.csv'
-    df.to_csv(filename,float_format='%.2f',index=False)   #Maybe adjust float?
+    df.to_csv(filename,float_format='%.3f',index=False)   #Maybe adjust float?
     
