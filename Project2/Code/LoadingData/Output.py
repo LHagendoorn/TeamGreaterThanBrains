@@ -14,13 +14,14 @@ import numpy
 
 #Makes the submissionfile. Please note:
 #   You need testdata_filenames in the same folder as your code
-#   Data = the probabilities of each class per photo in a DATAFRAME, you can use pd.DataFrame(predictions)
+#   Predsdf = the probabilities of each class per photo in a DATAFRAME, you can use pd.DataFrame(predictions)
 #   Submnumber = The number of the submission that day
 #   Name = The name of the approach you have used
 
-def to_outputfile(data,submnumber,name):
+def to_outputfile(predsdf,submnumber,name):
     labels_testdata = load_testdata_filenames()
-    data[data < 0.0000001] = 0.0000001          
+    predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
+    predsdf[predsdf < 0.01] = 0.01        
     df = pd.DataFrame({ 'img' : numpy.asarray(labels_testdata),
                     'c0' : predsdf.iloc[:,0],
                     'c1' : predsdf.iloc[:,1],
@@ -35,5 +36,5 @@ def to_outputfile(data,submnumber,name):
     df = df[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
     timestr = time.strftime("%Y%m%d")
     filename = 'outputfile_' + timestr + '_' + str(submnumber) + '_' + name + '.csv'
-    df.to_csv(filename,float_format='%.7f',index=False)   #Maybe adjust float?
+    df.to_csv(filename,float_format='%.2f',index=False)   #Maybe adjust float?
     
