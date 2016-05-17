@@ -28,21 +28,25 @@ This file assumes to be in the same directory as a folder named 'csv_files', con
 testdata_filenames
 testdata_indices
 testdata_caffefeatures
+testdata_caffefeatures_padded
 
 traindata_filenames
 traindata_indices
 traindata_labels
 traindata_caffefeatures
+traindata_caffefeatures_padded
 
 trainset_filenames
 trainset_indices
 trainset_labels
 trainset_caffefeatures
+trainset_caffefeatures_padded
 
 validationset_filenames
 validationset_indices
 validationset_labels
 validationset_caffefeatures
+validationset_caffefeatures_padded
 
 dummy_filenames
 dummy_indices
@@ -138,27 +142,44 @@ def load_dummy_labels():
 
 '''Loading of caffe features'''
 
-def load_testdata_caffefeatures():
-    df = pd.read_csv(os.path.join(csv_dir,'testdata_caffefeatures.csv'),header=None)
+def load_testdata_caffefeatures(padded=True):
+    if padded:
+        filename = 'testdata_caffefeatures_padded.csv'
+    else:
+        filename = 'testdata_caffefeatures.csv'
+    df = pd.read_csv(os.path.join(csv_dir,filename),header=None)
     df.drop(df.columns[0], axis=1, inplace=True)
     return df.values
 
-def load_traindata_caffefeatures():
-    df = pd.read_csv(os.path.join(csv_dir,'traindata_caffefeatures.csv'),header=None)
+def load_traindata_caffefeatures(padded=True):
+    if padded:
+        filename = 'traindata_caffefeatures_padded.csv'
+    else:
+        filename = 'traindata_caffefeatures.csv'
+    df = pd.read_csv(os.path.join(csv_dir,filename),header=None)
     df.drop(df.columns[0], axis=1, inplace=True)
     return df.values
 
-def load_trainset_caffefeatures():
-    df = pd.read_csv(os.path.join(csv_dir,'trainset_caffefeatures.csv'),header=None)
+def load_trainset_caffefeatures(padded=True):
+    if padded:
+        filename = 'trainset_caffefeatures_padded.csv'
+    else:
+        filename = 'trainset_caffefeatures.csv'
+    df = pd.read_csv(os.path.join(csv_dir,filename),header=None)
     df.drop(df.columns[0], axis=1, inplace=True)
     return df.values
 
-def load_validationset_caffefeatures():
-    df = pd.read_csv(os.path.join(csv_dir,'validationset_caffefeatures.csv'),header=None)
+def load_validationset_caffefeatures(padded=True):
+    if padded:
+        filename = 'validationset_caffefeatures_padded.csv'
+    else:
+        filename = 'validationset_caffefeatures.csv'
+    df = pd.read_csv(os.path.join(csv_dir,filename),header=None)
     df.drop(df.columns[0], axis=1, inplace=True)
     return df.values
 
-def load_dummy_caffefeatures():
-    df = pd.read_csv(os.path.join(csv_dir,'dummy_caffefeatures.csv'),header=None)
+def load_dummy_caffefeatures(padded=True):
+    filename = 'testdata_caffefeatures.csv'
+    df = pd.read_csv(os.path.join(csv_dir,filename),header=None)
     df.drop(df.columns[0], axis=1, inplace=True)
     return df.values

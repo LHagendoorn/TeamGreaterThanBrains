@@ -4,13 +4,13 @@ It selects the correct datapoints for each set and sorts them in the standard or
 @author: Diede Kemper
 '''
 
-from Load import *
+from IO import Input
 import pandas as pd
 import sys
 
 print 'reading in features'
 
-df = pd.read_csv('features_train.csv', header=None)
+df = pd.read_csv('features_train_padded.csv', header=None)
 
 print 'Old dataframe'
 print df.head()
@@ -20,7 +20,7 @@ print df.head()
 #
 
 #get filenames
-traindata_filenames = load_traindata_filenames()
+traindata_filenames = Input.load_traindata_filenames()
 caffefeatures_filenames = list(df[0].values)
 
 # check whether there are files without caffefeatures
@@ -38,7 +38,7 @@ df2 = df.reindex(indices)
 #save features
 print 'New dataframe traindata'
 print df2.head()
-df2.to_csv('traindata_caffefeatures.csv', index=False, header=False) #save to csv
+df2.to_csv('traindata_caffefeatures_padded.csv', index=False, header=False) #save to csv
 
 #
 # TRAIN SET
@@ -47,7 +47,7 @@ df2.to_csv('traindata_caffefeatures.csv', index=False, header=False) #save to cs
 # select trainset features + sort on trainset filenames
 
 #get filenames
-trainset_filenames = load_trainset_filenames()
+trainset_filenames = Input.load_trainset_filenames()
 
 #select rows containing train set images
 df2 = df2.set_index([0]) #set the filenames as the indexing column
@@ -64,7 +64,7 @@ print filenames[0:10]
 #save features
 print 'New dataframe trainset'
 print df_trainset.head()
-df_trainset.to_csv('trainset_caffefeatures.csv', header=False) #save to csv
+df_trainset.to_csv('trainset_caffefeatures_padded.csv', header=False) #save to csv
 
 #
 # VALIDATION SET
@@ -73,7 +73,7 @@ df_trainset.to_csv('trainset_caffefeatures.csv', header=False) #save to csv
 # select validationset features + sort on validationset filenames
 
 #get filenames
-validationset_filenames = load_validationset_filenames()
+validationset_filenames = Input.load_validationset_filenames()
 
 #select rows containing train set images
 df_validationset = df2.loc[df2.index.isin(validationset_filenames)] #select those indices corresponding to the trainset filenames
@@ -89,4 +89,4 @@ print filenames[0:10]
 #save features
 print 'New dataframe validationset'
 print df_validationset.head()
-df_validationset.to_csv('validationset_caffefeatures.csv', header=False) #save to csv
+df_validationset.to_csv('validationset_caffefeatures_padded.csv', header=False) #save to csv
