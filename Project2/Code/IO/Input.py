@@ -179,7 +179,7 @@ def load_validationset_caffefeatures(padded=True):
     return df.values
 
 def load_dummy_caffefeatures(padded=True):
-    filename = 'testdata_caffefeatures.csv'
+    filename = 'dummy_caffefeatures.csv'
     df = pd.read_csv(os.path.join(csv_dir,filename),header=None)
     df.drop(df.columns[0], axis=1, inplace=True)
     return df.values
