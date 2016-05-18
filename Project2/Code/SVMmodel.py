@@ -25,25 +25,25 @@ y_trainset = np.asarray(load_trainset_labels())
 y_validationset = np.asarray(load_validationset_labels())
 
 #Train classifier
-clf = OneVsRestClassifier(SVC(kernel='rbf', probability=True))
+clf = OneVsRestClassifier(SVC(kernel='linear', probability=True))
 clf.fit(x_traindata, y_traindata)
 
 # now you can save it to a file
-with open('classifierrbftraindata_padded.pkl', 'wb') as f:
+with open('classifierlineartraindata_padded.pkl', 'wb') as f:
     pickle.dump(clf, f)
 
 ## and later you can load it
-with open('classifierrbftraindata_padded.pkl', 'rb') as f:
+with open('classifierlineartraindata_padded.pkl', 'rb') as f:
     clf = pickle.load(f)
     
 #Make predictions
 preds = clf.predict_proba(x_testdata)
 predsdf = pd.DataFrame(preds)
-predsdf.to_pickle('predictions_traindata_padded_rbf.pkl')  # where to save it, usually as a .pkl
+predsdf.to_pickle('predictions_traindata_padded_linear.pkl')  # where to save it, usually as a .pkl
 
 #df = pd.read_pickle(file_name)
 #Write outputfile
 check = predsdf
 predsdf = check
-to_outputfile(check,7,'rbfSVC_traindata_padded_3dec_highten')
+to_outputfile(check,8,'linearSVC_traindata_padded_3dec_highten')
 
