@@ -1,0 +1,8 @@
+L2-reg
+batch_size = 16
+hiddenLayerSize1 = 1024
+hiddenLayerSize2 = 128
+beta = 0.00001
+num_steps = 3001
+Validation accuracy: 11.8%
+
