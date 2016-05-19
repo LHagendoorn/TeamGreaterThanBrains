@@ -64,6 +64,8 @@ import os #to load csv files path names correctly
 dir = os.path.dirname(__file__)
 csv_dir = os.path.join(dir,'csv_files')
 
+nrTestData = 79716
+
 '''Loading of image file names'''
 
 def load_testdata_filenames():
@@ -142,12 +144,12 @@ def load_dummy_labels():
 
 '''Loading of caffe features'''
 
-def load_testdata_caffefeatures(padded=True):
+def load_testdata_caffefeatures(padded=True,skpRows=None,nrws=None):
     if padded:
         filename = 'testdata_caffefeatures_padded.csv'
     else:
         filename = 'testdata_caffefeatures.csv'
-    df = pd.read_csv(os.path.join(csv_dir,filename),header=None)
+    df = pd.read_csv(os.path.join(csv_dir,filename),header=None,skiprows=skpRows, nrows=nrws)
     df.drop(df.columns[0], axis=1, inplace=True)
     return df.values
 
