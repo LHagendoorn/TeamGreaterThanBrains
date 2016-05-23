@@ -25,7 +25,7 @@ y_trainset = np.asarray(load_trainset_labels())
 y_validationset = np.asarray(load_validationset_labels())
 
 #Train classifier
-clf = OneVsRestClassifier(SVC(kernel='linear', probability=True))
+clf = OneVsOneClassifier(SVC(kernel='poly'))
 clf.fit(x_traindata, y_traindata)
 
 # now you can save it to a file
@@ -37,13 +37,18 @@ with open('classifierlineartraindata_padded.pkl', 'rb') as f:
     clf = pickle.load(f)
     
 #Make predictions
-preds = clf.predict_proba(x_testdata)
+preds = clf.predict_proba(x_validationset)
 predsdf = pd.DataFrame(preds)
 predsdf.to_pickle('predictions_traindata_padded_linear.pkl')  # where to save it, usually as a .pkl
 
-#df = pd.read_pickle(file_name)
+df = pd.read_pickle('predictions_traindata_padded_linear.pkl')
 #Write outputfile
 check = predsdf
 predsdf = check
 to_outputfile(check,8,'linearSVC_traindata_padded_3dec_highten')
 
+
+labels = load_validationset_labels()
+def accuracy(predictions, labels):
+  return (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels,1))
+          / predictions.shape[0])
