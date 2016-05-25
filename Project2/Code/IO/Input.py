@@ -145,6 +145,13 @@ def load_dummy_labels():
 
 '''Loading of caffe features'''
 
+'''
+padded = whether the pictures were padded or cut. True (default) or False.
+userows = a list of indices of the rows you want to load. If None (default) all rows are loaded.
+featureSelectionMethod = the method used to rank the features. Either 'chi2' or 'RF'. If None (default), all features are loaded.
+Percentile = the percentile of features you want to select. Between 0 or 100. If 100 (default), all features are loaded.
+'''
+
 def load_testdata_caffefeatures(padded=True, userows=None, featureSelectionMethod=None, Percentile=100):
     if padded:
         filename = 'testdata_caffefeatures_padded.csv'
@@ -257,6 +264,8 @@ def read_rows_and_cols_selection(filename, percentile, featureSelectionMethod, N
 def get_feature_importance_list(featureSelectionMethod):
     if featureSelectionMethod == 'chi2':
         filename = 'feature_importance_trainset_chi2.csv'
+    elif featureSelectionMethod == 'RF':
+        filename = 'feature_importance_trainset_RF.csv'
     else:
         print 'featureSelectionMethod is not recognized.'
 
