@@ -10,6 +10,8 @@ import pandas as pd #to use dataframes
 from itertools import chain #to flatten lists
 import os #to load csv files path names correctly
 from PIL import Image
+from skimage.io import imread
+
 
 '''
 Usage:
@@ -76,18 +78,18 @@ Note: These methods assume that all images are present in the directories 'image
 #testset = boolean, true if test set, false otherwise
 def get_image_by_filename(filename, testset):
     if testset:
-        return Image.open(os.path.join(test_image_dir,filename))
+        return imread(os.path.join(test_image_dir,filename))
     else:
-        return Image.open(os.path.join(train_image_dir,filename))
+        return imread(os.path.join(train_image_dir,filename))
 
 #index = integer
 #testset = boolean, true if test set, false otherwise
 def get_image_by_index(index, testset):
     filename = 'img_' + str(index) + '.jpg'
     if testset:
-        return Image.open('images\\test\\' + filename)
+        return imread('images\\test\\' + filename)
     else:
-        return Image.open('images\\train\\' + filename)
+        return imread('images\\train\\' + filename)
 
 '''Loading of image file names'''
 

@@ -6,3 +6,5 @@ Project2/Code/LoadingData/trainset_caffefeatures.csv
 Project2/Code/LoadingData/trainset_caffefeatures_padded.csv
 Project2/Code/LoadingData/validationset_caffefeatures.csv
 Project2/Code/LoadingData/validationset_caffefeatures_padded.csv
+*.jpg
+*.pyc
