@@ -9,6 +9,7 @@ from math import ceil #to round floats to the highest integer
 import pandas as pd #to use dataframes
 from itertools import chain #to flatten lists
 import os #to load csv files path names correctly
+from PIL import Image
 
 '''
 Usage:
@@ -62,10 +63,31 @@ dummy_caffefeatures
 
 '''
 
-
 #load csv directory
 dir = os.path.dirname(__file__)
 csv_dir = os.path.join(dir,'csv_files')
+test_image_dir = os.path.join(dir,'images','test')
+train_image_dir = os.path.join(dir,'images','train')
+
+'''Getting a specific image
+Note: These methods assume that all images are present in the directories 'images\\train' and 'images\\test' '''
+
+#filename = string of filename 'img_XXX.jpg'
+#testset = boolean, true if test set, false otherwise
+def get_image_by_filename(filename, testset):
+    if testset:
+        return Image.open(os.path.join(test_image_dir,filename))
+    else:
+        return Image.open(os.path.join(train_image_dir,filename))
+
+#index = integer
+#testset = boolean, true if test set, false otherwise
+def get_image_by_index(index, testset):
+    filename = 'img_' + str(index) + '.jpg'
+    if testset:
+        return Image.open('images\\test\\' + filename)
+    else:
+        return Image.open('images\\train\\' + filename)
 
 '''Loading of image file names'''
 
