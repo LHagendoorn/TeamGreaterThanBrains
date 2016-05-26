@@ -5,14 +5,16 @@ Spyder Editor
 This is a temporary script file.
 """
 
-from IO import Input
+from Input import *
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn import datasets
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import SVC
+from sklearn.svm import NuSVC
 import numpy as np
 from Output import *
 import pickle
+#import xgboost as xgb
 
 #Load data
 x_testdata = load_testdata_caffefeatures(padded=True)
@@ -25,27 +27,27 @@ y_trainset = np.asarray(load_trainset_labels())
 y_validationset = np.asarray(load_validationset_labels())
 
 #Train classifier
-clf = OneVsOneClassifier(SVC(kernel='poly'))
-clf.fit(x_traindata, y_traindata)
+clf = OneVsRestClassifier(SVC(kernel='linear', probability=True))
+clf.fit(x_trainset, y_trainset)
 
 # now you can save it to a file
-with open('classifierlineartraindata_padded.pkl', 'wb') as f:
+with open('classifierlineartrainset_padded_SVC.pkl', 'wb') as f:
     pickle.dump(clf, f)
 
 ## and later you can load it
-with open('classifierlineartraindata_padded.pkl', 'rb') as f:
+with open('classifierlineartrainset_padded_SVC.pkl', 'rb') as f:
     clf = pickle.load(f)
     
 #Make predictions
 preds = clf.predict_proba(x_validationset)
 predsdf = pd.DataFrame(preds)
-predsdf.to_pickle('predictions_traindata_padded_linear.pkl')  # where to save it, usually as a .pkl
+predsdf.to_pickle('predictions_validationset_padded_linear_SVC.pkl')  # where to save it, usually as a .pkl
 
-df = pd.read_pickle('predictions_traindata_padded_linear.pkl')
+predsdf = pd.read_pickle('predictions_validationset_padded_linear_SVC.pkl')
 #Write outputfile
 check = predsdf
 predsdf = check
-to_outputfile(check,8,'linearSVC_traindata_padded_3dec_highten')
+to_outputfile(check,1,'linearSVC_trainset_padded_3dec_highten_SVC')
 
 
 labels = load_validationset_labels()
