@@ -49,8 +49,3 @@ check = predsdf
 predsdf = check
 to_outputfile(check,1,'linearSVC_trainset_padded_3dec_highten_SVC')
 
-
-labels = load_validationset_labels()
-def accuracy(predictions, labels):
-  return (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels,1))
-          / predictions.shape[0])

@@ -19,7 +19,7 @@ import numpy
 #   Name = The name of the approach you have used
 
 def to_outputfile(predsdf,submnumber,name):
-    labels_testdata = load_validationset_filenames()
+    labels_testdata = load_testdata_filenames()
     predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
     predsdf[predsdf < 0.01] = 0.01        
     print predsdf.shape
