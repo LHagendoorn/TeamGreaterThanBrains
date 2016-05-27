@@ -11,34 +11,39 @@ The resulting histogram is saved in fd as a vector
 from skimage.feature import hog
 from skimage import color
 from IO import Input
-import numpy as np
 import pandas as pd
 
-foto_ids= Input.load_traindata_filenames()
+#filename for the output HOG features csv file
+filename = 'HOG_features_train.csv'
 
-#HOGs = np.zeros((3,27648))
+#load file names of all training photos 
+foto_ids= Input.load_traindata_filenames()
+nr_of_photos =len(foto_ids)
+
+#intiate HOG array
 HOGs= []
 
-#for x in range(foto_ids):
-for x in range(5):
+#loop over all photos and determine HOG features
+for x in range(nr_of_photos):
     
     #get current photo in grayscale
     current_photo = foto_ids[x]
     image_color = Input.get_image_by_filename(current_photo, False)
-    #image_color = imread(current_photo)
     image = color.rgb2gray(image_color)
 
     #calculate the Histogram of Oriented Gradients (HOG) for current image
-    fd, hog_image = hog(image, orientations=9, pixels_per_cell=(10, 10),
-                        cells_per_block=(1,1), visualise=True)
-    #save the fd vectors (1d HOGS)
-    #HOGs[x] = fd
-    HOGs.append(fd)
-    #H=np.hstack(fd)
-
+    fd = hog(image, orientations=8, pixels_per_cell=(16, 16),
+                        cells_per_block=(1,1), visualise=False)
                         
+    #save the fd vectors (1d HOGS)
+    HOGs.append(fd)
     
-   
-np.concatenate( HOGs, axis=0 )
+    #print progress   
+    if(x%100 == 0):                  
+        print ("\r{0}".format((float(x)/nr_of_photos)*100) + '% done')
+
+
+#Convert the HOGs list to a dataframe, and save it to a csv file under 'filename'
 hogDF = pd.DataFrame(HOGs)
-hogDF.to_csv('HOG_features_test.csv') 
+hogDF.to_csv(filename, index = False , header = False) 
+print('DONE')
