@@ -13,14 +13,14 @@ import os #to load csv files path names correctly
 from PIL import Image
 import numpy
 import time
-a = pd.read_csv('outputfile_20160523_1_polySVC_traindata_padded_3dec_highten_c05.csv')
-b = pd.read_csv('outputfile_20160523_2_polySVC_traindata_padded_3dec_highten_c01.csv')
-c = pd.read_csv('outputfile_20160523_2_polySVC_traindata_padded_3dec_highten_c01.csv')
-d = pd.read_csv('outputfile_20160518_8_linearSVC_traindata_padded_3dec_highten.csv')
-e = pd.read_csv('outputfile_20160523_1_polySVC_traindata_padded_3dec_highten_c05.csv')
+a = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
+b = pd.read_csv('outputfile_20160602_1_onevsoneclassifier.csv')
+c = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
+d = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
+e = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
 
 submnumber = 2
-name = 'ENSEMBLE_Average_of_3best'
+name = 'ENSEMBLE_Average_of_5best_inclkeras_right'
 labels_testdata = load_testdata_filenames()
 df = pd.DataFrame({ 'img' : numpy.asarray(labels_testdata),
                     'c0' : (a.iloc[:,1]+ b.iloc[:,1] + c.iloc[:,1] + d.iloc[:,1]+ e.iloc[:,1])/5,
@@ -38,3 +38,4 @@ timestr = time.strftime("%Y%m%d")
 filename = 'outputfile_' + timestr + '_' + str(submnumber) + '_' + name + '.csv'
 df.to_csv(filename,float_format='%.2f',index=False)   #Maybe adjust float?
     
+

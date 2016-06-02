@@ -9,7 +9,7 @@ import time
 import numpy
 
 #Use it by:
-#   from Output import *
+#   from IO import Output
 
 
 #Makes the submissionfile. Please note:
@@ -17,13 +17,19 @@ import numpy
 #   Predsdf = the probabilities of each class per photo in a DATAFRAME, you can use pd.DataFrame(predictions)
 #   Submnumber = The number of the submission that day
 #   Name = The name of the approach you have used
+#	clean = True, if probabilities should stay as they are, False, if they should be changed.
 
-def to_outputfile(predsdf,submnumber,name):
-    labels_testdata = load_testdata_filenames()
-    predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
-    predsdf[predsdf < 0.01] = 0.01        
-    print predsdf.shape
-    df = pd.DataFrame({ 'img' : numpy.asarray(labels_testdata),
+def to_outputfile(predsdf,submnumber,name, clean=True, validation=True ):
+    if not validation:
+        labels = load_testdata_filenames()
+    else:
+        labels = load_validationset_filenames()
+
+    if not clean:
+        predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
+        predsdf[predsdf < 0.01] = 0.01        
+
+    df = pd.DataFrame({ 'img' : numpy.asarray(labels),
                     'c0' : predsdf.iloc[:,0],
                     'c1' : predsdf.iloc[:,1],
                     'c2' : predsdf.iloc[:,2],
@@ -38,4 +44,3 @@ def to_outputfile(predsdf,submnumber,name):
     timestr = time.strftime("%Y%m%d")
     filename = 'outputfile_' + timestr + '_' + str(submnumber) + '_' + name + '.csv'
     df.to_csv(filename,float_format='%.2f',index=False)   #Maybe adjust float?
-    
