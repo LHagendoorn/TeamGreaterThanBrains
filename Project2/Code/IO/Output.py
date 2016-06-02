@@ -17,6 +17,7 @@ import numpy
 #   Predsdf = the probabilities of each class per photo in a DATAFRAME, you can use pd.DataFrame(predictions)
 #   Submnumber = The number of the submission that day
 #   Name = The name of the approach you have used
+#	clean = True, if probabilities should stay as they are, False, if they should be changed.
 
 def to_outputfile(predsdf,submnumber,name, clean=True):
     labels_testdata = load_testdata_filenames()
