@@ -14,11 +14,11 @@ from skimage.feature import hog
 from skimage import color, exposure
 
 
-img = imread('img_139.jpg')
+img = imread('img_94.jpg')
 image = color.rgb2gray(img)
 
 
-fd, hog_image = hog(image, orientations=8, pixels_per_cell=(16,16),
+fd, hog_image = hog(image, orientations=4, pixels_per_cell=(12,12),
                     cells_per_block=(1,1), visualise=True)
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)

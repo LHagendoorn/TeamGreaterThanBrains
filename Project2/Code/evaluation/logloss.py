@@ -26,15 +26,32 @@ pij is the predicted probability that observation i is in class j.
 import pandas as pd
 import numpy as np
 from IO import Input
+from tune import tune_probabilities
 from itertools import chain #to flatten lists
 import math
 
-def compute(path_to_submission_csv):
+'''
+Main function: load data, tunes probabilities and computes logloss
+'''
 
-    df = pd.read_csv(path_to_submission_csv)
+def compute(path_to_submission_csv, scale_parameter=4):
+    df_filenames, df_data = load_data(path_to_submission_csv)
+    df_data = tune_probabilities(df_data, scale_parameter)
+    return compute_logloss(df_filenames, df_data)
+
+'''
+Load data
+'''
+def load_data(path_to_csv):
+    df = pd.read_csv(path_to_csv)
     df_filenames = df['img']
     df_data = df.drop('img', axis=1)
+    return df_filenames, df_data
 
+'''
+Compute the logloss, as done by kaggle. Plus preprocessing.
+'''
+def compute_logloss(df_filenames, df_data):
     #STEP 1: replace values
     replacer = lambda x: max(min(x,1-10**(-15)),10**(-15))
     df_data = df_data.applymap(replacer)
