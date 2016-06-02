@@ -18,4 +18,4 @@ b = pd.read_csv('outputfile_20160526_1_linearSVC_trainset_padded_3dec_highten_SV
 c = pd.read_csv('outputfile_20160526_1_polySVC_trainset_padded_3dec_highten_SVC.csv')
 
 predsdf = pd.read_pickle('predictions_validationset_padded_poly_SVC.pkl')
-to_outputfile(predsdf,1,'polySVC_unadjusted_validationset', clean=True)
+to_outputfile(predsdf,1,'polySVC_unadjusted_validationset', clean=True, validation=True)
