@@ -19,14 +19,17 @@ import numpy
 #   Name = The name of the approach you have used
 #	clean = True, if probabilities should stay as they are, False, if they should be changed.
 
-def to_outputfile(predsdf,submnumber,name, clean=True):
-    labels_testdata = load_testdata_filenames()
+def to_outputfile(predsdf,submnumber,name, clean=True, validation=True ):
+    if not validation:
+        labels = load_testdata_filenames()
+    else:
+        labels = load_validationset_filenames()
 
     if not clean:
         predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
         predsdf[predsdf < 0.01] = 0.01        
 
-    df = pd.DataFrame({ 'img' : numpy.asarray(labels_testdata),
+    df = pd.DataFrame({ 'img' : numpy.asarray(labels),
                     'c0' : predsdf.iloc[:,0],
                     'c1' : predsdf.iloc[:,1],
                     'c2' : predsdf.iloc[:,2],
