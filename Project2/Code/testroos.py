@@ -12,3 +12,7 @@ l= [[2,3,4]]
 
 traindata_names = Input.load_traindata_filenames()
 trainset_names = Input.load_trainset_filenames()
+
+
+
+df2=pd.DataFrame(x_traindata , traindata_names)
