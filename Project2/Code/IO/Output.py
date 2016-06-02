@@ -9,7 +9,7 @@ import time
 import numpy
 
 #Use it by:
-#   from Output import *
+#   from IO import Output
 
 
 #Makes the submissionfile. Please note:
@@ -18,11 +18,13 @@ import numpy
 #   Submnumber = The number of the submission that day
 #   Name = The name of the approach you have used
 
-def to_outputfile(predsdf,submnumber,name):
+def to_outputfile(predsdf,submnumber,name, clean=True):
     labels_testdata = load_testdata_filenames()
-    predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
-    predsdf[predsdf < 0.01] = 0.01        
-    print predsdf.shape
+
+    if not clean:
+        predsdf[(predsdf > 0.8) & (predsdf < 0.95)] = predsdf[(predsdf > 0.8) & (predsdf < 0.95)] + 0.05
+        predsdf[predsdf < 0.01] = 0.01        
+
     df = pd.DataFrame({ 'img' : numpy.asarray(labels_testdata),
                     'c0' : predsdf.iloc[:,0],
                     'c1' : predsdf.iloc[:,1],
@@ -38,4 +40,3 @@ def to_outputfile(predsdf,submnumber,name):
     timestr = time.strftime("%Y%m%d")
     filename = 'outputfile_' + timestr + '_' + str(submnumber) + '_' + name + '.csv'
     df.to_csv(filename,float_format='%.2f',index=False)   #Maybe adjust float?
-    
