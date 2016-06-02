@@ -25,7 +25,7 @@ def tune_submissionfile(path_to_file, scale_parameter, submissionnumber=1, name=
     #create new name from old name
     if name == None:
         filename = os.path.basename(path_to_file)
-		filename = filename[22:] #remove 'outputfile_2016XXXX_X_'
+        filename = filename[22:] #remove 'outputfile_2016XXXX_X_'
         filename = filename[:-4] #remove .csv extension
         name = filename + '_tuned'
 

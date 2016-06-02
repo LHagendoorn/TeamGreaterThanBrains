@@ -7,12 +7,12 @@ Created on Thu Jun 02 14:29:55 2016
 
 from IO import Input
 
-ind= Input.load_trainset_indices()
-l= [[2,3,4]]
+import numpy as np
+import pandas as pd
 
-traindata_names = Input.load_traindata_filenames()
-trainset_names = Input.load_trainset_filenames()
+df_keras=pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Project2/Outputfiles/outputfile_20160528_2_keras1_throughoutputfile.csv')
+df_hog= pd.read_csv('C:/Users/roosv_000/Documents/TeamGreaterThanBrains/Project2/Outputfiles/outputfile_20160601_1_linearSVC_traindata_HOG_8_16_1_Caffe_SVC.csv')
 
-
-
-df2=pd.DataFrame(x_traindata , traindata_names)
+for i in range(8061):
+    
+    df_keras
