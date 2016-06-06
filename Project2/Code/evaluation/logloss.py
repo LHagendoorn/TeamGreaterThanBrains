@@ -34,9 +34,10 @@ import math
 Main function: load data, tunes probabilities and computes logloss
 '''
 
-def compute(path_to_submission_csv, scale_parameter=4):
+def compute(path_to_submission_csv, scale_parameter=None):
     df_filenames, df_data = load_data(path_to_submission_csv)
-    df_data = tune_probabilities(df_data, scale_parameter)
+    if scale_parameter is not None:
+        df_data = tune_probabilities(df_data, scale_parameter)
     return compute_logloss(df_filenames, df_data)
 
 '''
