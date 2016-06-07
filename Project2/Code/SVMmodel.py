@@ -28,11 +28,11 @@ y_trainset = np.asarray(load_trainset_labels())
 y_validationset = np.asarray(load_validationset_labels())
 
 #Train classifier
-clf = OneVsOneClassifier(LinearSVC(random_state=5))
-clf.fit(x_traindata, y_traindata)
+clf = OneVsRestClassifier(SVC(C=0.1,kernel='poly', probability=True))
+clf.fit(x_trainset, y_trainset)
 
 # now you can save it to a file
-with open('classifierlineartraindata_onevsone_padded_SVC_rs5.pkl', 'wb') as f:
+with open('classifierpolytrainset_SVC_c01.pkl', 'wb') as f:
     pickle.dump(clf, f)
 
 ## and later you can load it
@@ -40,13 +40,14 @@ with open('classifierlineartraindata_onevsone_padded_SVC_rs5.pkl', 'rb') as f:
     clf = pickle.load(f)
     
 #Make predictions
-preds = clf.predict(x_testdata)
+preds = clf.predict_proba(x_validationset)
 predsdf = pd.DataFrame(preds)
-predsdf.to_pickle('predictions_testdata__onevsone_padded_linearSVC_rs5.pkl')  # where to save it, usually as a .pkl
+predsdf.to_pickle('predictions_poly_c01_validationset.pkl')  # where to save it, usually as a .pkl
 
 predsdf = pd.read_pickle('predictions_testdata__onevsone_padded_linearSVC_rs5.pkl')
 #Write outputfile
 check = predsdf
 predsdf = check
-to_outputfile(check,1,'linearSVC_traindata_onevsone_padded_3dec_highten_rs5')
+to_outputfile(check,1,'poly_c01_clean_validationset',clean=True, validation=True)
+to_outputfile(check,2,'poly_c01_validationset',clean=False, validation=True)
 
