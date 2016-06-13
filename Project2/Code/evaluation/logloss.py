@@ -77,14 +77,11 @@ def compute_logloss(df_filenames, df_data):
     df_data = df_data.reindex(indices)
     df_data = df_data.reset_index() #reset index --> adds new indices, old indices become column 'index'
     df_data = df_data.drop('index', axis=1) #remove this new column 'index'
-
     #select probabilities of correct classes only
     df_sparse_probs = df_data * df_labels
     probs = df_sparse_probs.values
     probs = list(chain.from_iterable(probs)) #flatten list
     probs = filter(lambda x: x!=0,probs) #remove all zeros
-
     #apply log to them and take the average
     log_probs = [math.log(p) for p in probs]
-
     return -(np.mean(log_probs))
