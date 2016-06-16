@@ -36,18 +36,18 @@ with open('classifierpolytrainset_SVC_c01.pkl', 'wb') as f:
     pickle.dump(clf, f)
 
 ## and later you can load it
-with open('classifierlineartraindata_onevsone_padded_SVC_rs5.pkl', 'rb') as f:
+with open('classifierpolytraindata_padded_c01.pkl', 'rb') as f:
     clf = pickle.load(f)
     
 #Make predictions
-preds = clf.predict_proba(x_validationset)
+preds = clf.predict_proba(x_testdata[:,1:])
 predsdf = pd.DataFrame(preds)
 predsdf.to_pickle('predictions_poly_c01_validationset.pkl')  # where to save it, usually as a .pkl
 
-predsdf = pd.read_pickle('predictions_testdata__onevsone_padded_linearSVC_rs5.pkl')
+predsdf = pd.read_pickle('predictions_traindata_padded_poly_c01.pkl')
 #Write outputfile
 check = predsdf
 predsdf = check
 to_outputfile(check,1,'poly_c01_clean_validationset',clean=True, validation=True)
-to_outputfile(check,2,'poly_c01_validationset',clean=False, validation=True)
+to_outputfile(check,1,'poly_c01_clean',clean=True, validation=False)
 
