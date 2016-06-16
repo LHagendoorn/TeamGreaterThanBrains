@@ -240,7 +240,7 @@ def load_data(filename, N, featureSelectionMethod, percentile, userows):
             return read_rows_and_cols_selection(filename, percentile, featureSelectionMethod, N, userows)
 
     else:
-        print 'Percentile should be between 0 and 100.'
+        #print 'Percentile should be between 0 and 100.'
         pass
 
 '''Reads in a csv file by filename.
@@ -291,7 +291,7 @@ def get_feature_importance_list(featureSelectionMethod):
     elif featureSelectionMethod == 'RF':
         filename = 'feature_importance_trainset_RF.csv'
     else:
-        print 'featureSelectionMethod is not recognized.'
+        print("featureSelectionMethod is not recognized.")
 
     #read in feature importance order
     with open(os.path.join(csv_dir, filename), 'rb') as f:
