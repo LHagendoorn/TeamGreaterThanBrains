@@ -3,6 +3,12 @@
 Created on Thu May 19 14:10:14 2016
 
 @author: Laurens
+
+This selects patches of colour within a certain range in the HSV colour space,
+these patches are correlated with the skin of the driver, and in theory they should
+give us three clusters, one for each hand(/arm) and one for the head. The position of the centre of these clusters
+is then taken as a feature for that image.
+
 """
 
 import csv
@@ -43,13 +49,7 @@ for fold in folders:
         skinCoords = np.vstack((vals,x,y)).T
         km.fit(skinCoords)
         clcenters = km.cluster_centers_
-        #print km.cluster_centers_
-        #print skinMask[skMask==1]
-        #cv2.imwrite(sys.argv[2], skinMask) # Second image
-        
-        #skin = cv2.bitwise_and(im, im, mask = skinMask)
-        #cv2.imwrite('C:/Users/Laurens/Documents/Teamgreaterthanbrains/Project2/Code/skintest/MASK' + f, skinMask)         # Final image
-        #print np.reshape(np.concatenate(([f] *3,clcenters[:,1],clcenters[:,2])),(3,3)).T
+
         df = np.vstack((df,np.reshape(np.concatenate(([f] *3,clcenters[:,1],clcenters[:,2])),(3,3)).T))
         if fcount%100 == 0:
             print fcount
