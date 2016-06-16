@@ -40,6 +40,14 @@ def compute(path_to_submission_csv, scale_parameter=None):
         df_data = tune_probabilities(df_data, scale_parameter)
     return compute_logloss(df_filenames, df_data)
 
+
+
+def compute2(df, scale_parameter=None):
+    df_filenames = df.iloc[:,0]
+    df_data = df.iloc[:,1:]
+    if scale_parameter is not None:
+        df_data = tune_probabilities(df_data, scale_parameter)
+    return compute_logloss(df_filenames, df_data)
 '''
 Load data
 '''
@@ -54,7 +62,7 @@ Compute the logloss, as done by kaggle. Plus preprocessing.
 '''
 def compute_logloss(df_filenames, df_data):
     #STEP 1: replace values
-    replacer = lambda x: max(min(x,1-10**(-15)),10**(-15))
+    replacer = lambda x: max(float(min(x,0.999999999999)),0.0000000000000001)
     df_data = df_data.applymap(replacer)
 
     #STEP 2: rescale
@@ -75,13 +83,13 @@ def compute_logloss(df_filenames, df_data):
     current_order = list(df_filenames.values)
     indices = [current_order.index(filename) for filename in correct_order]
     df_data = df_data.reindex(indices)
-
+    df_data = df_data.reset_index() #reset index --> adds new indices, old indices become column 'index'
+    df_data = df_data.drop('index', axis=1) #remove this new column 'index'
     #select probabilities of correct classes only
     df_sparse_probs = df_data * df_labels
     probs = df_sparse_probs.values
     probs = list(chain.from_iterable(probs)) #flatten list
     probs = filter(lambda x: x!=0,probs) #remove all zeros
-
     #apply log to them and take the average
     log_probs = [math.log(p) for p in probs]
     return -(np.mean(log_probs))

@@ -1,7 +1,9 @@
 '''
-The function tune_probabilities() takes the path to the raw model probabilities as input, and creates a new tuned
+This script contains two main tune functions: tune_submissionfile() and tune_probabilities()
+The function tune_submissionfile() takes the path to the raw model probabilities as input, and creates a new tuned
 submission file as output. As argument for scale_parameter, take the best tuned one based on the validationset. Note
 that this best scale_parameter differs from model to model.
+The function tune_probabilities() tunes the input probabilities by scaling them and putting them in a softmax function.
 @author: Diede Kemper
 '''
 
@@ -46,7 +48,7 @@ Tunes the probabilities by scaling them and putting them in a softmax function
 '''
 def tune_probabilities(df_data, scale_parameter):
     #remove extreme values and zeros
-    replacer = lambda x: max(min(x,1-10**(-15)),10**(-15))
+    replacer = lambda x: max(float(min(x,0.999999999999)),0.0000000000000001)
     df_data = df_data.applymap(replacer)
 
     #scale values according to the scale_parameter
