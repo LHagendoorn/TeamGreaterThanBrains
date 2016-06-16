@@ -40,6 +40,14 @@ def compute(path_to_submission_csv, scale_parameter=None):
         df_data = tune_probabilities(df_data, scale_parameter)
     return compute_logloss(df_filenames, df_data)
 
+
+
+def compute2(df, scale_parameter=None):
+    df_filenames = df.iloc[:,0]
+    df_data = df.iloc[:,1:]
+    if scale_parameter is not None:
+        df_data = tune_probabilities(df_data, scale_parameter)
+    return compute_logloss(df_filenames, df_data)
 '''
 Load data
 '''
