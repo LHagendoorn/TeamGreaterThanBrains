@@ -30,11 +30,12 @@ for fold in folders:
         km = KMeans(n_clusters = 3)
     
         im = cv2.imread(path + fold + '/' + f)
-        
-        #im_ycrcb = cv2.cvtColor(im, cv2.COLOR_BGR2YCR_CB)
+        #Set upper and lower bounds for the skin colours:
         lower = np.array([0, 10, 15], dtype = "uint8")
         upper = np.array([50, 173, 240], dtype = "uint8")
+        #convert the image to HSV colour space
         converted = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
+        #apply the range, and perform a series of actions to smooth out the blobs
         skinMask = cv2.inRange(converted, lower, upper)
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
         skinMask = cv2.erode(skinMask, kernel, iterations = 1)
@@ -42,11 +43,13 @@ for fold in folders:
         skinMask = cv2.erode(skinMask, kernel, iterations = 1)
         skinMask = cv2.GaussianBlur(skinMask, (3, 3), 0)
         skinMask = np.array(skinMask)
+        #Prepare the skinMask for clustering
         w,h = skinMask.shape
         vals = np.reshape(skinMask,(w*h))
         x = range(w) * h
         y = np.repeat(range(h),w)
         skinCoords = np.vstack((vals,x,y)).T
+        #Fit 3 clusters to the skinMask, and store the cluster centres as features
         km.fit(skinCoords)
         clcenters = km.cluster_centers_
 
