@@ -11,7 +11,7 @@ import pandas as pd #to use dataframes
 from itertools import chain #to flatten lists
 import os #to load csv files path names correctly
 from PIL import Image
-import Input
+import Input 
 import numpy
 import time
 
