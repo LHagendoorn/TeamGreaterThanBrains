@@ -133,6 +133,41 @@ timestr = time.strftime("%Y%m%d")
 filename = 'outputfile_' + timestr + '_' + str(submnumber) + '_' + name + '.csv'
 df.to_csv(filename,float_format='%.2f',index=False)   #Maybe adjust float?
     
+#Three best kerasfiles
+    order = pd.DataFrame(load_testdata_filenames())
+order.columns = ['img']
+keras1 = pd.read_csv('outputfile_20160611_1_KERAS_submission_loss__vgg_16_10x10_r_224_c_224_folds_10_ep_10.csv')
+keras1 = keras1[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
+keras1 = order.merge(keras1,on='img')
+keras2 = pd.read_csv('outputfile_20160608_1_KERAS_submission_loss__vgg_16_3x20_r_224_c_224_folds_3_ep_20.csv')
+keras2 = keras2[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
+keras2 = order.merge(keras2,on='img')
+keras3 = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
+keras3 = keras3[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
+keras3 = order.merge(keras3,on='img')
+keras4 = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
+keras4 = keras4[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
+keras4 = order.merge(keras4,on='img')
+
+keras6 = keras1
+keras6.iloc[:,1:] = 0.6*keras1.iloc[:,1:] + 0.25*keras2.iloc[:,1:] + 0.15*keras3.iloc[:,1:]
+keras6.to_csv('average_of_threekeras_first06sec025third015.csv', index=False)
+
+#Adjust very high probabilities
+for r in range(0,keras6.shape[0]):
+        i = keras6.iloc[r,1:]  
+        if i.max() > 0.99:
+            ind = i.idxmax()
+            i[:] = 0.00000001
+            i[ind] = 0.99999
+        keras6.iloc[r,1:] = i
+        if r % 1000 == 0:
+            print r
+            
+
+
+
+
 
 #Calculate false negatives
 def count_not_class(datafr, labels_true):
