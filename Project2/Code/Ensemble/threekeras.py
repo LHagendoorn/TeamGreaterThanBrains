@@ -20,10 +20,10 @@ order.columns = ['img']
 keras1 = pd.read_csv('outputfile_20160611_1_KERAS_submission_loss__vgg_16_10x10_r_224_c_224_folds_10_ep_10.csv')
 keras1 = keras1[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
 keras1 = order.merge(keras1,on='img')
-keras2 = pd.read_csv('outputfile_20160609_2_kerass_ensemble.csv')
+keras2 = pd.read_csv('outputfile_20160608_1_KERAS_submission_loss__vgg_16_3x20_r_224_c_224_folds_3_ep_20.csv')
 keras2 = keras2[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
 keras2 = order.merge(keras2,on='img')
-keras3 = pd.read_csv('outputfile_20160528_1_keras1_throughoutputfile.csv')
+keras3 = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
 keras3 = keras3[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
 keras3 = order.merge(keras3,on='img')
 keras4 = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')
@@ -31,9 +31,14 @@ keras4 = keras4[['img','c0','c1','c2','c3','c4','c5','c6','c7','c8','c9']]
 keras4 = order.merge(keras4,on='img')
 
 keras6 = keras1
-keras6.iloc[:,1:] = keras1.iloc[:,1:] + keras2.iloc[:,1:] + keras3.iloc[:,1:] + keras4.iloc[:,1:]
+keras6.iloc[:,1:] = 0.7*keras1.iloc[:,1:] + 0.2*keras2.iloc[:,1:] + 0.1*keras3.iloc[:,1:]
 keras6.iloc[:,1:] = keras6.iloc[:,1:]/4
-keras6.to_csv('average_of_threekeras.csv', index=False)
+keras6.to_csv('average_of_threekeras_first07sec02third01.csv', index=False)
+
+
+
+
+
 
 
 keras1 = pd.read_csv('outputfile_20160527_1_KERAS_submission_loss__vgg_16_2x20_r_224_c_224_folds_2_ep_20.csv')

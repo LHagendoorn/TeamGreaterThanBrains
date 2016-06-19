@@ -23,14 +23,14 @@ def transformXY(coords):
 trainset_filenames = Input.load_trainset_filenames()
 validationset_filenames = Input.load_validationset_filenames()
 traindata_filenames = Input.load_traindata_filenames()
-testset_filenames = Input.load_testdata_filenames()
+testdata_filenames = Input.load_testdata_filenames()
 
-feat = pd.read_csv('skinTrainFeatures.csv', index_col = 0)
-
-x_trainset = feat.ix[trainset_filenames]
-x_validationset = feat.ix[validationset_filenames]  
-x_testset = feat.ix[testset_filenames]  
-x_traindata = feat.ix[traindata_filenames]
+feattrain = pd.read_csv('Skin clusters/skinTrainFeatures.csv', index_col = 0)
+feattest = pd.read_csv('Skin clusters/skinTestFeatures.csv', index_col = 0)
+x_trainset = feattrain.ix[trainset_filenames]
+x_validationset = feattrain.ix[validationset_filenames]  
+x_testdata = feattest.ix[testdata_filenames]  
+x_traindata = feattrain.ix[traindata_filenames]
 
 y_trainset = np.asarray(Input.load_trainset_labels())
 y_validationset = np.asarray(Input.load_validationset_labels())
@@ -38,11 +38,11 @@ y_traindata = np.asarray(Input.load_traindata_labels())
 
 x_trainset = x_trainset.groupby(x_trainset.index).apply(transformXY)
 x_validationset = x_validationset.groupby(x_validationset.index).apply(transformXY)
-x_testset = x_testset.groupby(x_testset.index).apply(transformXY)
+x_testdata = x_testdata.groupby(x_testdata.index).apply(transformXY)
 x_traindata = x_traindata.groupby(x_traindata.index).apply(transformXY)
 
-df = x_traindata.iloc[:,1:]
-df_norm = (df - df.mean(axis=1)) / (df.max(axis=1) - df.min(axis=1))
+df = x_traindata
+df_norm = (df - df.mean()) / (df.max() - df.min())
 x_traindata = df_norm
 
 #Train classifier
@@ -58,6 +58,10 @@ with open('SKINclassifierlineartraindata_onevsone_padded_SVC_rs5.pkl', 'rb') as 
     clf = pickle.load(f)
     
 #Make predictions
+ df = x_testdata
+df_norm = (df - df.mean()) / (df.max() - df.min())
+x_testdata = df_norm  
+    
 preds = clf.predict_proba(x_testdata)
 predsdf = pd.DataFrame(preds)
 predsdf.to_pickle('predictions_SKIN_poly_c01_validationset.pkl')  # where to save it, usually as a .pkl
