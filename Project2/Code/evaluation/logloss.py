@@ -31,17 +31,19 @@ from itertools import chain #to flatten lists
 import math
 
 '''
-Main function: load data, tunes probabilities and computes logloss
+Compute = main function: load data, tunes probabilities and computes logloss
+Path to data must be given.
 '''
-
 def compute(path_to_submission_csv, scale_parameter=None):
     df_filenames, df_data = load_data(path_to_submission_csv)
     if scale_parameter is not None:
         df_data = tune_probabilities(df_data, scale_parameter)
     return compute_logloss(df_filenames, df_data)
 
-
-
+'''
+Compute = main function: load data, tunes probabilities and computes logloss
+Dataframe with data must be given.
+'''
 def compute2(df, scale_parameter=None):
     df_filenames = df.iloc[:,0]
     df_data = df.iloc[:,1:]
@@ -85,11 +87,13 @@ def compute_logloss(df_filenames, df_data):
     df_data = df_data.reindex(indices)
     df_data = df_data.reset_index() #reset index --> adds new indices, old indices become column 'index'
     df_data = df_data.drop('index', axis=1) #remove this new column 'index'
+	
     #select probabilities of correct classes only
     df_sparse_probs = df_data * df_labels
     probs = df_sparse_probs.values
     probs = list(chain.from_iterable(probs)) #flatten list
     probs = filter(lambda x: x!=0,probs) #remove all zeros
+	
     #apply log to them and take the average
     log_probs = [math.log(p) for p in probs]
     return -(np.mean(log_probs))

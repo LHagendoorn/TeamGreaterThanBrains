@@ -4,14 +4,13 @@ Note: first find the optimal scale parameter.
 @author: Diede Kemper.
 '''
 
-
-
-
 from tune import tune_submissionfile
+from tune import tune_submissionfile_cutoff
 import os
 
 #get current directory
 dir = os.path.dirname(__file__)
-file = os.path.join(dir,'RF_testset.csv')
 
-tune_submissionfile(file, 22)
+file = os.path.join(dir,'outputfile_20160616_1_NN_11_testset.csv')
+tune_submissionfile_cutoff(file, 'NN_11_cutoff')
+tune_submissionfile(file, 6, 'NN_11_softmax')

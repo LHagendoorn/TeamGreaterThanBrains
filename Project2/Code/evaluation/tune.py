@@ -10,13 +10,14 @@ The function tune_probabilities() tunes the input probabilities by scaling them 
 import os
 import numpy as np
 from IO import Output
+from IO import Input
 import pandas as pd
 
 '''
 Tunes the probabilities in the submission file using the given scale_parameter.
 Note: first find the optimal scale_parameter for the validationset.
 '''
-def tune_submissionfile(path_to_file, scale_parameter, submissionnumber=1, name=None):
+def tune_submissionfile(path_to_file, scale_parameter, name, submissionnumber=1):
 
     #load data
     df_filenames, df_data = load_data(path_to_file)
@@ -24,15 +25,26 @@ def tune_submissionfile(path_to_file, scale_parameter, submissionnumber=1, name=
     #tune probabilities
     df_data = tune_probabilities(df_data, scale_parameter)
 
-    #create new name from old name
-    if name == None:
-        filename = os.path.basename(path_to_file)
-        filename = filename[22:] #remove 'outputfile_2016XXXX_X_'
-        filename = filename[:-4] #remove .csv extension
-        name = filename + '_tuned'
+    #sort data on test data order
+    df_data = sort_dataframe(df_data, df_filenames)
 
     #create new submissionfile
     Output.to_outputfile(df_data, submissionnumber, name)
+
+'''
+Tunes the probabilities in the submission file using the cut off method.
+Note: use a clean submission file as input.
+'''
+def tune_submissionfile_cutoff(path_to_file, name, submissionnumber=1):
+
+    #load data
+    df_filenames, df_data = load_data(path_to_file)
+
+    #sort data on test data order
+    df_data = sort_dataframe(df_data, df_filenames)
+
+    #create new submissionfile
+    Output.to_outputfile(df_data, submissionnumber, name, clean=False) #not clean!
 
 '''
 Load data
@@ -58,3 +70,17 @@ def tune_probabilities(df_data, scale_parameter):
     #apply softmax
     softmax = lambda x: np.exp(x) / np.sum(np.exp(x), axis=0)
     return df_data.apply(softmax,axis=1)
+
+'''
+Sorts the data in the dataframe to have the same order as the testdata
+df_data = the data that should be sorted
+df_filenames = the current order of filenames of the data
+'''
+def sort_dataframe(df_data, df_filenames):
+
+    correct_order = Input.load_testdata_filenames()
+    current_order = list(df_filenames.values)
+    indices = [current_order.index(filename) for filename in correct_order]
+    df_data = df_data.reindex(indices)
+    df_data = df_data.reset_index() #reset index --> adds new indices, old indices become column 'index'
+    return df_data.drop('index', axis=1) #remove this new column 'index'
